@@ -35,7 +35,23 @@
       <div class="join join-vertical sm:join-horizontal gap-4 mb-8">
         {% for block in section.blocks %}
           {% if block.type == 'cta_button' %}
-            {% render 'button', block: block %}
+            {% if block.settings.url != blank %}
+              <a
+                href="{{ block.settings.url }}"
+                class="btn {{ block.settings.button_style }} {{ block.settings.button_size }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.text }}
+              </a>
+            {% else %}
+              <button
+                type="button"
+                class="btn {{ block.settings.button_style }} {{ block.settings.button_size }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.text }}
+              </button>
+            {% endif %}
           {% endif %}
         {% endfor %}
       </div>

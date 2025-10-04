@@ -267,6 +267,96 @@
     "page_width": {
       "narrow": "Narrow",
       "wide": "Wide"
+    },
+    "button_style": {
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "outline": "Outline",
+      "ghost": "Ghost",
+      "link": "Link"
+    },
+    "button_size": {
+      "extra_small": "Extra Small",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "extra_large": "Extra Large"
+    },
+    "button_width": {
+      "auto": "Auto",
+      "wide": "Wide",
+      "full_width": "Full Width"
+    },
+    "button_type": {
+      "button": "Button",
+      "submit": "Submit",
+      "reset": "Reset"
+    },
+    "icon": {
+      "none": "None",
+      "arrow_right": "Arrow Right",
+      "shopping_cart": "Shopping Cart",
+      "heart": "Heart",
+      "search": "Search",
+      "user": "User",
+      "check": "Check",
+      "star": "Star",
+      "shield": "Shield",
+      "truck": "Truck",
+      "clock": "Clock"
+    },
+    "image_style": {
+      "none": "None",
+      "rounded": "Rounded",
+      "rounded_large": "Rounded Large",
+      "rounded_extra_large": "Rounded Extra Large",
+      "circle": "Circle",
+      "squircle": "Squircle",
+      "hexagon": "Hexagon",
+      "triangle": "Triangle"
+    },
+    "loading": {
+      "lazy": "Lazy",
+      "eager": "Eager"
+    },
+    "spacer_direction": {
+      "vertical": "Vertical",
+      "horizontal": "Horizontal"
+    },
+    "divider_style": {
+      "solid": "Solid",
+      "dashed": "Dashed"
+    },
+    "divider_color": {
+      "neutral": "Neutral",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "accent": "Accent",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "spacing": {
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "extra_large": "Extra Large",
+      "huge": "Huge"
+    },
+    "direction": {
+      "horizontal": "Horizontal",
+      "vertical": "Vertical"
+    },
+    "alignment": {
+      "left": "Left",
+      "center": "Center",
+      "right": "Right"
+    },
+    "text_style": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "normal": "Normal"
     }
   },
   "password": {

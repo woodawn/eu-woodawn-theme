@@ -24,11 +24,13 @@
       {% endif %}
 
       <div class="indicator">
-        <a href="{{ routes.cart_url }}" class="btn btn-ghost btn-circle">
+        <button class="btn btn-ghost btn-circle" data-cart-toggle>
           {{ 'icon-cart.svg' | inline_asset_content }}
-        </a>
+        </button>
         {% if cart.item_count > 0 %}
-          <span class="badge badge-primary badge-sm indicator-item">{{ cart.item_count }}</span>
+          <span class="badge badge-primary badge-sm indicator-item" data-cart-count>{{ cart.item_count }}</span>
+        {% else %}
+          <span class="badge badge-primary badge-sm indicator-item" data-cart-count style="display: none;">0</span>
         {% endif %}
       </div>
     </div>

@@ -21,5 +21,11 @@
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
+
+    <!-- Cart Drawer -->
+    {% render 'cart-drawer' %}
+
+    <!-- Cart JavaScript -->
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
   </body>
 </html>

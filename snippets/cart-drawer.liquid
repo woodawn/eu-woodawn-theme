@@ -1,0 +1,59 @@
+{% comment %}
+  Cart Drawer - Side sliding cart panel
+  Usage: {% render 'cart-drawer' %}
+{% endcomment %}
+
+<div class="cart-drawer fixed top-0 right-0 h-full w-full max-w-md bg-base-100 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50">
+  <div class="flex flex-col h-full">
+    <!-- Cart Header -->
+    <div class="flex items-center justify-between p-6 border-b border-base-300">
+      <h2 class="text-xl font-bold">Shopping Cart</h2>
+      <button class="btn btn-sm btn-circle btn-ghost" data-cart-close>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="flex-1 overflow-y-auto">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <!-- Items will be populated by JavaScript -->
+      </div>
+
+      <!-- Empty Cart State -->
+      <div class="cart-empty text-center py-12 px-6" style="display: none;">
+        <div class="text-6xl mb-4">🛒</div>
+        <h3 class="text-lg font-semibold mb-2">Your cart is empty</h3>
+        <p class="text-base-content/70 mb-6">Looks like you haven't added anything to your cart yet.</p>
+        <button class="btn btn-primary" data-cart-close>Continue Shopping</button>
+      </div>
+    </div>
+
+    <!-- Cart Footer -->
+    <div class="cart-total border-t border-base-300">
+      <!-- Total and checkout buttons will be populated by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<!-- Cart Drawer Backdrop -->
+<div class="cart-drawer-backdrop fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+<style>
+  .cart-drawer.open {
+    transform: translateX(0);
+  }
+  
+  .cart-drawer.open + .cart-drawer-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (max-width: 768px) {
+    .cart-drawer {
+      max-w-full;
+    }
+  }
+</style>

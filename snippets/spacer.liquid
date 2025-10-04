@@ -1,0 +1,19 @@
+{% doc %}
+  Renders a spacer block for adding vertical or horizontal spacing.
+
+  @example
+  {% content_for 'block', type: 'spacer', id: 'spacer' %}
+{% enddoc %}
+
+<div
+  class="spacer {{ block.settings.spacer_direction }}"
+  style="
+    {% if block.settings.spacer_direction == 'vertical' %}
+      height: {{ block.settings.spacer_size }}px;
+    {% else %}
+      width: {{ block.settings.spacer_size }}px;
+    {% endif %}
+  "
+  {{ block.shopify_attributes }}
+></div>
+

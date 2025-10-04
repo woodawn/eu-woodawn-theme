@@ -1,0 +1,207 @@
+{% comment %}
+  Optimized Hero section using blocks for better flexibility
+  Features: Modular design with reusable blocks
+{% endcomment %}
+
+<div class="hero min-h-screen bg-gradient-to-br from-base-100 to-base-200">
+  <div class="hero-content flex-col lg:flex-row-reverse max-w-7xl mx-auto">
+    <div class="lg:w-1/2">
+      <div class="indicator">
+        {% if section.settings.badge_text != blank %}
+          <span class="indicator-item indicator-start badge badge-primary badge-lg font-semibold">
+            {{ section.settings.badge_text }}
+          </span>
+        {% endif %}
+        <img
+          src="{{ section.settings.hero_image | image_url: width: 800 }}"
+          alt="{{ section.settings.hero_image.alt | default: 'Hero Product' }}"
+          class="mask mask-squircle shadow-2xl w-full"
+          width="800"
+          height="600"
+        >
+      </div>
+    </div>
+
+    <div class="lg:w-1/2 lg:pr-12">
+      <h1 class="text-5xl lg:text-6xl font-bold leading-tight mb-6">
+        {{ section.settings.headline | default: 'Revolutionary Kitchen Innovation' }}
+      </h1>
+
+      <p class="text-xl text-base-content/80 mb-8 leading-relaxed">
+        {{
+          section.settings.subheadline
+          | default: 'Experience the future of cooking with our cutting-edge technology that transforms your kitchen into a culinary powerhouse.'
+        }}
+      </p>
+
+      <!-- CTA Buttons using blocks -->
+      <div class="join join-vertical sm:join-horizontal gap-4 mb-8">
+        {% for block in section.blocks %}
+          {% if block.type == 'cta_button' %}
+            {% render 'button', block: block %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Features using blocks -->
+      {% if section.blocks.size > 0 %}
+        <div class="grid grid-cols-2 gap-4">
+          {% for block in section.blocks %}
+            {% if block.type == 'hero_feature' %}
+              {% render 'hero-feature', block: block %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Section (Optimized)",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "New"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Revolutionary Kitchen Innovation"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Experience the future of cooking with our cutting-edge technology that transforms your kitchen into a culinary powerhouse."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "cta_button",
+      "name": "CTA Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Button URL"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button Style",
+          "default": "btn-primary",
+          "options": [
+            { "value": "btn-primary", "label": "Primary" },
+            { "value": "btn-outline", "label": "Outline" },
+            { "value": "btn-secondary", "label": "Secondary" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "Button Size",
+          "default": "btn-lg",
+          "options": [
+            { "value": "btn-sm", "label": "Small" },
+            { "value": "btn-md", "label": "Medium" },
+            { "value": "btn-lg", "label": "Large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "hero_feature",
+      "name": "Hero Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Text",
+          "default": "Smart Technology"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "check",
+          "options": [
+            { "value": "check", "label": "Check" },
+            { "value": "star", "label": "Star" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "heart", "label": "Heart" }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Section (Optimized)",
+      "blocks": [
+        {
+          "type": "cta_button",
+          "settings": {
+            "text": "Shop Now",
+            "button_style": "btn-primary",
+            "button_size": "btn-lg"
+          }
+        },
+        {
+          "type": "cta_button",
+          "settings": {
+            "text": "Learn More",
+            "button_style": "btn-outline",
+            "button_size": "btn-lg"
+          }
+        },
+        {
+          "type": "hero_feature",
+          "settings": {
+            "text": "Smart Technology",
+            "icon": "check"
+          }
+        },
+        {
+          "type": "hero_feature",
+          "settings": {
+            "text": "Energy Efficient",
+            "icon": "star"
+          }
+        },
+        {
+          "type": "hero_feature",
+          "settings": {
+            "text": "Premium Quality",
+            "icon": "shield"
+          }
+        },
+        {
+          "type": "hero_feature",
+          "settings": {
+            "text": "5-Year Warranty",
+            "icon": "truck"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

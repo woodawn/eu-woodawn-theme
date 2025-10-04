@@ -1,0 +1,185 @@
+{% comment %}
+  Optimized Call-to-Action section using blocks for better flexibility
+  Features: Modular design with reusable blocks
+{% endcomment %}
+
+<div
+  class="hero py-20 min-h-[600px] {% if section.settings.background_image %}bg-cover bg-center{% else %}bg-gradient-to-r from-primary to-secondary{% endif %}"
+  {% if section.settings.background_image %}
+    style="background-image: url('{{ section.settings.background_image | image_url: width: 1920 }}')"
+  {% endif %}
+>
+  {% if section.settings.background_image %}
+    <div class="hero-overlay bg-black/50"></div>
+  {% endif %}
+  <div class="hero-content text-center text-white">
+    <div class="max-w-4xl">
+      {% if section.settings.badge_text != blank %}
+        <div class="badge badge-primary badge-lg font-semibold mb-6">
+          {{ section.settings.badge_text }}
+        </div>
+      {% endif %}
+
+      <h2 class="text-4xl lg:text-6xl font-bold mb-6">
+        {{ section.settings.headline | default: 'Ready to Transform Your Kitchen?' }}
+      </h2>
+
+      <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+        {{
+          section.settings.subheadline
+          | default: 'Join thousands of satisfied customers and experience the future of cooking today.'
+        }}
+      </p>
+
+      <!-- CTA Buttons using blocks -->
+      <div class="join join-vertical sm:join-horizontal gap-4 mb-8">
+        {% for block in section.blocks %}
+          {% if block.type == 'cta_button' %}
+            {% render 'button', block: block %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Features using blocks -->
+      {% if section.blocks.size > 0 %}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-white/80">
+          {% for block in section.blocks %}
+            {% if block.type == 'cta_feature' %}
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-sm font-medium">{{ block.settings.text }}</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "CTA Optimized",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "Limited Time Offer"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Ready to Transform Your Kitchen?"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Join thousands of satisfied customers and experience the future of cooking today."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "cta_button",
+      "name": "CTA Button",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Button Text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Button URL"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button Style",
+          "default": "btn-primary",
+          "options": [
+            { "value": "btn-primary", "label": "Primary" },
+            { "value": "btn-outline", "label": "Outline" },
+            { "value": "btn-secondary", "label": "Secondary" }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_size",
+          "label": "Button Size",
+          "default": "btn-lg",
+          "options": [
+            { "value": "btn-sm", "label": "Small" },
+            { "value": "btn-md", "label": "Medium" },
+            { "value": "btn-lg", "label": "Large" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "cta_feature",
+      "name": "CTA Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Text",
+          "default": "Free Shipping"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CTA Optimized",
+      "blocks": [
+        {
+          "type": "cta_button",
+          "settings": {
+            "text": "Shop Now",
+            "button_style": "btn-primary",
+            "button_size": "btn-lg"
+          }
+        },
+        {
+          "type": "cta_button",
+          "settings": {
+            "text": "Learn More",
+            "button_style": "btn-outline",
+            "button_size": "btn-lg"
+          }
+        },
+        {
+          "type": "cta_feature",
+          "settings": {
+            "text": "Free Shipping"
+          }
+        },
+        {
+          "type": "cta_feature",
+          "settings": {
+            "text": "30-Day Returns"
+          }
+        },
+        {
+          "type": "cta_feature",
+          "settings": {
+            "text": "5-Year Warranty"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -137,6 +137,8 @@
   "products": {
     "quick_add": "Quick add",
     "sold_out": "Sold out",
-    "view_details": "View details"
+    "view_details": "View details",
+    "quantity": "Quantity",
+    "add_to_cart": "Add to cart"
   }
 }

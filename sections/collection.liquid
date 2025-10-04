@@ -119,7 +119,7 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
                 </svg>
-                Sort by
+                {{ 'collections.sorting.title' | t }}
               </label>
               <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li><a href="?sort_by=best-selling">Best Selling</a></li>
@@ -253,7 +253,7 @@
                     </div>
 
                     {% unless product.available %}
-                      <span class="badge badge-error">Sold Out</span>
+                      <span class="badge badge-error">{{ 'products.sold_out' | t }}</span>
                     {% endunless %}
                   </div>
 

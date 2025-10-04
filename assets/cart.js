@@ -313,6 +313,76 @@ class CartManager {
       currency: "USD",
     }).format(cents / 100);
   }
+
+  initStickyCart() {
+    this.stickyCart = document.querySelector("[data-sticky-cart]");
+    if (!this.stickyCart) return;
+
+    // Bind sticky cart events
+    this.bindStickyCartEvents();
+  }
+
+  bindStickyCartEvents() {
+    if (!this.stickyCart) return;
+
+    // Toggle cart drawer from sticky cart
+    this.stickyCart.addEventListener("click", (e) => {
+      if (e.target.matches("[data-cart-toggle]")) {
+        e.preventDefault();
+        this.toggleCartDrawer();
+      }
+    });
+  }
+
+  updateStickyCart() {
+    if (!this.stickyCart || !this.cart) return;
+
+    const cartItemCount = this.stickyCart.querySelector("[data-cart-item-count]");
+    const cartSubtotal = this.stickyCart.querySelector("[data-cart-subtotal]");
+    const cartTotal = this.stickyCart.querySelector("[data-cart-total]");
+    const cartCount = this.stickyCart.querySelector("[data-cart-count]");
+
+    if (this.cart.item_count > 0) {
+      // Update cart item count
+      if (cartItemCount) {
+        cartItemCount.textContent = this.cart.item_count;
+      }
+
+      // Update cart total
+      if (cartTotal) {
+        cartTotal.textContent = this.formatMoney(this.cart.total_price);
+      }
+
+      // Show cart count badge
+      if (cartCount) {
+        cartCount.textContent = this.cart.item_count;
+        cartCount.style.display = "block";
+      }
+
+      // Show sticky cart
+      this.showStickyCart();
+    } else {
+      // Hide sticky cart when empty
+      this.hideStickyCart();
+    }
+  }
+
+  showStickyCart() {
+    if (!this.stickyCart) return;
+    
+    // Don't show on cart or checkout pages
+    if (document.body.classList.contains('template-cart') || 
+        document.body.classList.contains('template-checkout')) {
+      return;
+    }
+
+    this.stickyCart.classList.add("show");
+  }
+
+  hideStickyCart() {
+    if (!this.stickyCart) return;
+    this.stickyCart.classList.remove("show");
+  }
 }
 
 // Initialize cart manager when DOM is loaded

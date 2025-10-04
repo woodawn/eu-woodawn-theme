@@ -2,7 +2,7 @@
   Renders a hero feature item with icon and text.
 
   @example
-  {% content_for 'block', type: 'hero-feature', id: 'feature' %}
+  {% render 'hero-feature', block: block %}
 {% enddoc %}
 
 <div class="flex items-center gap-3" {{ block.shopify_attributes }}>

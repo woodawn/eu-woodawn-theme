@@ -42,6 +42,29 @@
     "theme": "Theme",
     "typography": "Typography"
   },
+  "customers": {
+    "login": {
+      "title": "Login"
+    },
+    "register": {
+      "title": "Create account"
+    },
+    "activate_account": {
+      "title": "Activate account"
+    },
+    "reset_password": {
+      "title": "Reset password"
+    },
+    "account": {
+      "title": "Account"
+    },
+    "addresses": {
+      "title": "Addresses"
+    },
+    "order": {
+      "title": "Order"
+    }
+  },
   "labels": {
     "alignment": "Alignment",
     "background": "Background",

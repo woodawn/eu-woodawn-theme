@@ -1,4 +1,8 @@
-<header class="navbar bg-base-100 shadow-sm">
+<header 
+  class="navbar bg-base-100 shadow-sm{% if section.settings.sticky_header %} sticky top-0 z-50{% endif %}"
+  data-sticky-header="{{ section.settings.sticky_header }}"
+  data-sticky-scroll="{{ section.settings.sticky_scroll }}"
+>
   <div class="navbar-start">
     <!-- Mobile menu button -->
     <div class="dropdown lg:hidden">
@@ -109,6 +113,27 @@
     width: 1.5rem;
     height: 1.5rem;
   }
+
+  /* Sticky header 样式 */
+  .navbar.sticky {
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .navbar.sticky.scrolled {
+    background-color: rgba(var(--b1) / 0.95);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* 当 header 滚动时隐藏/显示效果 */
+  .navbar.sticky.hide-on-scroll {
+    transform: translateY(-100%);
+  }
+
+  .navbar.sticky.show-on-scroll {
+    transform: translateY(0);
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -119,6 +144,38 @@
       "type": "link_list",
       "id": "menu",
       "label": "t:labels.menu"
+    },
+    {
+      "type": "header",
+      "content": "Sticky Header Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Enable Sticky Header",
+      "default": true,
+      "info": "Make the header stick to the top when scrolling"
+    },
+    {
+      "type": "select",
+      "id": "sticky_scroll",
+      "label": "Sticky Scroll Behavior",
+      "default": "always_visible",
+      "options": [
+        {
+          "value": "always_visible",
+          "label": "Always Visible"
+        },
+        {
+          "value": "hide_on_scroll_down",
+          "label": "Hide on Scroll Down"
+        },
+        {
+          "value": "show_on_scroll_up",
+          "label": "Show on Scroll Up"
+        }
+      ],
+      "info": "Choose how the header behaves when scrolling"
     }
   ]
 }

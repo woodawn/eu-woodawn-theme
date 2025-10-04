@@ -21,10 +21,11 @@
     <div class="hero-content flex-col lg:flex-row gap-8 lg:gap-12">
       {% if block.settings.image %}
         <div class="hero-figure">
-          {{ block.settings.image | image_url: width: 600 | image_tag:
-             alt: block.settings.image.alt | default: block.settings.alt_text,
-             class: 'max-w-sm lg:max-w-md rounded-lg shadow-2xl',
-             loading: 'lazy'
+          {{
+            block.settings.image
+            | image_url: width: 600
+            | image_tag: alt: block.settings.image.alt
+            | default: block.settings.alt_text, class: 'max-w-sm lg:max-w-md rounded-lg shadow-2xl', loading: 'lazy'
           }}
         </div>
       {% endif %}

@@ -1,0 +1,135 @@
+{% comment %}
+  This section is used in the customer account template to render the account dashboard.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/customers/account
+{% endcomment %}
+
+<div class="container mx-auto p-6">
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold mb-4">{{ 'customers.account.title' | t }}</h1>
+    <p class="text-lg">{{ 'customers.account.welcome' | t: first_name: customer.first_name }}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% comment %} Account Details Card {% endcomment %}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">{{ 'customers.account.details' | t }}</h2>
+        <div class="space-y-2">
+          <div>
+            <span class="font-semibold">{{ 'customers.account.name' | t }}:</span>
+            <span>{{ customer.name }}</span>
+          </div>
+          <div>
+            <span class="font-semibold">{{ 'customers.account.email' | t }}:</span>
+            <span>{{ customer.email }}</span>
+          </div>
+          {% if customer.phone %}
+            <div>
+              <span class="font-semibold">{{ 'customers.account.phone' | t }}:</span>
+              <span>{{ customer.phone }}</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-actions justify-end">
+          <a href="{{ routes.account_edit_url }}" class="btn btn-primary btn-sm">
+            {{ 'customers.account.edit_details' | t }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Addresses Card {% endcomment %}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">{{ 'customers.account.addresses' | t }}</h2>
+        <p class="text-sm opacity-70">
+          {{ 'customers.account.addresses_count' | t: count: customer.addresses_count }}
+        </p>
+        <div class="card-actions justify-end">
+          <a href="{{ routes.account_addresses_url }}" class="btn btn-primary btn-sm">
+            {{ 'customers.account.manage_addresses' | t }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Orders Card {% endcomment %}
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title">{{ 'customers.account.orders' | t }}</h2>
+        <p class="text-sm opacity-70">
+          {{ 'customers.account.orders_count' | t: count: customer.orders_count }}
+        </p>
+        <div class="card-actions justify-end">
+          <a href="{{ routes.account_url }}" class="btn btn-primary btn-sm">
+            {{ 'customers.account.view_orders' | t }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Recent Orders Section {% endcomment %}
+  {% if customer.orders.size > 0 %}
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold mb-6">{{ 'customers.account.recent_orders' | t }}</h2>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>{{ 'customers.orders.order_number' | t }}</th>
+              <th>{{ 'customers.orders.date' | t }}</th>
+              <th>{{ 'customers.orders.payment_status' | t }}</th>
+              <th>{{ 'customers.orders.fulfillment_status' | t }}</th>
+              <th>{{ 'customers.orders.total' | t }}</th>
+              <th>{{ 'customers.orders.actions' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in customer.orders limit: 5 %}
+              <tr>
+                <td>
+                  <a href="{{ order.customer_url }}" class="link link-primary">
+                    {{ order.name }}
+                  </a>
+                </td>
+                <td>{{ order.created_at | date: '%B %d, %Y' }}</td>
+                <td>
+                  <span class="badge badge-{{ order.financial_status_label | downcase | replace: ' ', '-' }}">
+                    {{ order.financial_status_label }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-{{ order.fulfillment_status_label | downcase | replace: ' ', '-' }}">
+                    {{ order.fulfillment_status_label }}
+                  </span>
+                </td>
+                <td>{{ order.total_price | money }}</td>
+                <td>
+                  <a href="{{ order.customer_url }}" class="btn btn-sm btn-outline">
+                    {{ 'customers.orders.view' | t }}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+
+  {% comment %} Logout Section {% endcomment %}
+  <div class="mt-8 text-center">
+    <a href="{{ routes.account_logout_url }}" class="btn btn-outline btn-error">
+      {{ 'customers.account.logout' | t }}
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:customers.account.title",
+  "settings": []
+}
+{% endschema %}

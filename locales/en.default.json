@@ -37,7 +37,25 @@
     }
   },
   "collections": {
-    "title": "Collections"
+    "title": "Collections",
+    "filters": {
+      "title": "Filters",
+      "clear_all": "Clear all filters",
+      "clear": "Clear filters"
+    },
+    "sorting": {
+      "title": "Sort by",
+      "best_selling": "Best selling",
+      "name_asc": "Name A-Z",
+      "name_desc": "Name Z-A",
+      "price_asc": "Price low to high",
+      "price_desc": "Price high to low",
+      "newest": "Newest"
+    },
+    "no_products": {
+      "title": "No products found",
+      "description": "Try adjusting your filters or search terms."
+    }
   },
   "daisyui": {
     "brand_colors": "Brand colors",
@@ -115,5 +133,10 @@
     "submit": "Search",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
+  },
+  "products": {
+    "quick_add": "Quick add",
+    "sold_out": "Sold out",
+    "view_details": "View details"
   }
 }

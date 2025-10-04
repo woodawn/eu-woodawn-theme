@@ -47,6 +47,23 @@
     transform: translateY(0);
   }
   
+  /* Animation when item is added to cart */
+  .sticky-cart.cart-added {
+    animation: cartAdded 0.6s ease;
+  }
+  
+  @keyframes cartAdded {
+    0% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-10px) scale(1.05);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+  
   /* Hide sticky cart on cart page */
   .template-cart .sticky-cart {
     display: none !important;
@@ -55,6 +72,54 @@
   /* Hide sticky cart on checkout page */
   .template-checkout .sticky-cart {
     display: none !important;
+  }
+  
+  /* Add subtle animation for cart count badge */
+  .sticky-cart .badge {
+    transition: all 0.3s ease;
+  }
+  
+  .sticky-cart .badge:not([style*="display: none"]) {
+    animation: bounce 0.6s ease;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  /* Hover effects for buttons */
+  .sticky-cart .btn {
+    transition: all 0.2s ease;
+  }
+  
+  .sticky-cart .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Pulse animation for cart icon when items are added */
+  .sticky-cart .btn[data-cart-toggle]:hover svg {
+    animation: pulse 1s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
   
   /* Responsive adjustments */
@@ -76,6 +141,23 @@
     .sticky-cart .flex.items-center.gap-2 {
       width: 100%;
       justify-content: center;
+    }
+    
+    /* Make buttons full width on mobile */
+    .sticky-cart .btn {
+      flex: 1;
+    }
+  }
+  
+  /* Add backdrop blur effect for modern browsers */
+  @supports (backdrop-filter: blur(10px)) {
+    .sticky-cart {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    [data-theme="dark"] .sticky-cart {
+      background-color: rgba(0, 0, 0, 0.9);
     }
   }
 </style>

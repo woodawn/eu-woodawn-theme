@@ -85,6 +85,7 @@ class CartManager {
         const product = await response.json();
         await this.loadCart();
         this.showSuccessMessage(product);
+        this.animateStickyCart();
         this.openCartDrawer();
       } else {
         const error = await response.json();
@@ -387,6 +388,18 @@ class CartManager {
   hideStickyCart() {
     if (!this.stickyCart) return;
     this.stickyCart.classList.remove("show");
+  }
+
+  animateStickyCart() {
+    if (!this.stickyCart) return;
+    
+    // Add a temporary class for animation
+    this.stickyCart.classList.add("cart-added");
+    
+    // Remove the animation class after animation completes
+    setTimeout(() => {
+      this.stickyCart.classList.remove("cart-added");
+    }, 600);
   }
 
   handleScroll() {

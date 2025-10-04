@@ -1,0 +1,205 @@
+{% comment %}
+  Testimonials section inspired by Typhur's customer reviews
+  Features: Customer testimonials with ratings and photos
+{% endcomment %}
+
+<div class="py-20 bg-base-100">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+        {{ section.settings.heading | default: 'What Our Customers Say' }}
+      </h2>
+      <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+        {{
+          section.settings.subheading
+          | default: 'Join thousands of satisfied customers who have transformed their cooking experience.'
+        }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for block in section.blocks %}
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div class="card-body">
+            <div class="rating rating-sm mb-4">
+              {% for i in (1..5) %}
+                {% if i <= block.settings.rating %}
+                  <input
+                    type="radio"
+                    name="rating-{{ forloop.parentloop.index }}"
+                    class="mask mask-star-2 bg-warning"
+                    disabled
+                    checked
+                  >
+                {% else %}
+                  <input
+                    type="radio"
+                    name="rating-{{ forloop.parentloop.index }}"
+                    class="mask mask-star-2 bg-base-300"
+                    disabled
+                  >
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <p class="text-base-content/80 mb-6 italic">"{{ block.settings.testimonial }}"</p>
+
+            <div class="flex items-center gap-4">
+              {% if block.settings.customer_image %}
+                <div class="avatar">
+                  <div class="w-12 h-12 rounded-full">
+                    <img
+                      src="{{ block.settings.customer_image | image_url: width: 48 }}"
+                      alt="{{ block.settings.customer_name }}"
+                      width="48"
+                      height="48"
+                    >
+                  </div>
+                </div>
+              {% else %}
+                <div class="avatar placeholder">
+                  <div class="bg-primary text-primary-content rounded-full w-12">
+                    <span class="text-lg">{{ block.settings.customer_name | slice: 0 }}</span>
+                  </div>
+                </div>
+              {% endif %}
+
+              <div>
+                <h4 class="font-semibold">{{ block.settings.customer_name }}</h4>
+                {% if block.settings.customer_title != blank %}
+                  <p class="text-sm text-base-content/60">{{ block.settings.customer_title }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_trust_badges %}
+      <div class="mt-16 text-center">
+        <p class="text-sm text-base-content/60 mb-8">Trusted by customers worldwide</p>
+        <div class="flex flex-wrap justify-center items-center gap-8 opacity-60">
+          <div class="badge badge-outline badge-lg gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            SSL Secured
+          </div>
+          <div class="badge badge-outline badge-lg gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            30-Day Returns
+          </div>
+          <div class="badge badge-outline badge-lg gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            Free Shipping
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What Our Customers Say"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Join thousands of satisfied customers who have transformed their cooking experience."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_badges",
+      "label": "Show trust badges",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "testimonial",
+          "label": "Testimonial",
+          "default": "This product has completely transformed my cooking experience. The quality is outstanding and the results are amazing!"
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer Name",
+          "default": "Sarah Johnson"
+        },
+        {
+          "type": "text",
+          "id": "customer_title",
+          "label": "Customer Title",
+          "default": "Home Chef"
+        },
+        {
+          "type": "image_picker",
+          "id": "customer_image",
+          "label": "Customer Photo"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial": "This product has completely transformed my cooking experience. The quality is outstanding and the results are amazing!",
+            "customer_name": "Sarah Johnson",
+            "customer_title": "Home Chef",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial": "I've tried many similar products, but this one stands out for its innovative features and reliable performance.",
+            "customer_name": "Michael Chen",
+            "customer_title": "Professional Chef",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "testimonial": "Excellent customer service and fast shipping. The product exceeded my expectations in every way.",
+            "customer_name": "Emily Rodriguez",
+            "customer_title": "Food Blogger",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

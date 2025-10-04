@@ -1,0 +1,114 @@
+{% comment %}
+  Collection Banner Section
+  Displays collection image, title, and description in a hero-style banner
+{% endcomment %}
+
+{% if collection.image or collection.title or collection.description %}
+  <div class="relative overflow-hidden">
+    {% if collection.image %}
+      <div class="absolute inset-0">
+        <img
+          src="{{ collection.image | image_url: width: 1920 }}"
+          alt="{{ collection.image.alt | default: collection.title }}"
+          class="w-full h-full object-cover"
+          width="1920"
+          height="600"
+          loading="eager"
+        >
+        <div class="absolute inset-0 bg-black/40"></div>
+      </div>
+    {% else %}
+      <div class="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20"></div>
+    {% endif %}
+
+    <div class="relative container mx-auto px-6 py-24 lg:py-32">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        {% if section.settings.show_collection_title and collection.title %}
+          <h1 class="text-4xl lg:text-6xl font-bold mb-6">
+            {{ collection.title }}
+          </h1>
+        {% endif %}
+
+        {% if section.settings.show_collection_description and collection.description != blank %}
+          <p class="text-xl lg:text-2xl mb-8 opacity-90">
+            {{ collection.description }}
+          </p>
+        {% endif %}
+
+        <!-- Collection Stats -->
+        <div class="flex flex-wrap justify-center gap-8">
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4">
+            <div class="text-3xl font-bold">{{ collection.products_count }}</div>
+            <div class="text-sm opacity-80">Products</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4">
+            <div class="text-3xl font-bold">{{ collection.products | where: 'available', true | size }}</div>
+            <div class="text-sm opacity-80">In Stock</div>
+          </div>
+          {% assign sale_products = collection.products | where: 'compare_at_price', '>', 0 %}
+          {% if sale_products.size > 0 %}
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4">
+              <div class="text-3xl font-bold">{{ sale_products.size }}</div>
+              <div class="text-sm opacity-80">On Sale</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Display Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "Show collection image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "banner_height",
+      "label": "Banner height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Banner"
+    }
+  ]
+}
+{% endschema %}

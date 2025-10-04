@@ -1,0 +1,117 @@
+{% comment %}
+  This section is used in the article template to render the article page, which
+  displays the full content of the blog post and can optionally include a
+  comments section for customers (not shown in this example).
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/article
+{% endcomment %}
+
+<div class="container mx-auto p-6">
+  <article class="prose max-w-none">
+    {% if article.image %}
+      <div class="mb-8">
+        {{ article.image | image_url: width: 1000 | image_tag: class: 'rounded-lg shadow-xl w-full' }}
+      </div>
+    {% endif %}
+
+    <h1 class="text-4xl font-bold mb-4">{{ article.title }}</h1>
+
+    {% assign date = article.published_at | time_tag: format: 'date' %}
+    <div class="flex items-center gap-4 mb-8 text-sm text-base-content/70">
+      <span>{{ 'blog.article_metadata_html' | t: date: date, author: article.author }}</span>
+    </div>
+
+    <div class="prose max-w-none">
+      {{ article.content }}
+    </div>
+  </article>
+
+  {% if blog.comments_enabled? %}
+    <div class="mt-12">
+      <h2 class="text-2xl font-bold mb-6">{{ 'blog.article_comments' | t }}</h2>
+
+      <div id="comments" class="space-y-6">
+        {% paginate article.comments by 10 %}
+          {% for comment in article.comments %}
+            <div class="card bg-base-100 shadow-sm">
+              <div class="card-body">
+                <div class="flex items-center gap-4 mb-2">
+                  <h3 class="font-semibold">{{ comment.author }}</h3>
+                  <span class="text-sm text-base-content/70">
+                    {{- comment.created_at | time_tag: format: 'date' -}}
+                  </span>
+                </div>
+                <p>{{ comment.content }}</p>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="flex justify-center mt-8">
+            {{ paginate | default_pagination: anchor: 'comments' }}
+          </div>
+        {% endpaginate %}
+      </div>
+
+      <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-6">{{ 'blog.comment_form_title' | t }}</h2>
+
+        {% form 'new_comment', article, class: 'space-y-4' %}
+          {% if form.errors %}
+            <div class="alert alert-error">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+
+          <div class="form-control w-full">
+            <label class="label" for="author">
+              <span class="label-text">{{ 'blog.comment_form_name' | t }}</span>
+            </label>
+            <input
+              type="text"
+              name="comment[author]"
+              id="author"
+              value="{{ form.author }}"
+              required
+              class="input input-bordered w-full"
+            >
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label" for="email">
+              <span class="label-text">{{ 'blog.comment_form_email' | t }}</span>
+            </label>
+            <input
+              type="email"
+              name="comment[email]"
+              id="email"
+              value="{{ form.email }}"
+              required
+              class="input input-bordered w-full"
+            >
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label" for="body">
+              <span class="label-text">{{ 'blog.comment_form_body' | t }}</span>
+            </label>
+            <textarea
+              name="comment[body]"
+              id="body"
+              required
+              class="textarea textarea-bordered w-full h-32"
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">{{ 'blog.comment_form_submit' | t }}</button>
+        {% endform %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "t:general.article",
+  "settings": []
+}
+{% endschema %}

@@ -1,0 +1,299 @@
+{% comment %}
+  Advanced Collection Filters Section
+  Provides comprehensive filtering options for product collections
+{% endcomment %}
+
+<div class="bg-base-100 border-b border-base-300">
+  <div class="container mx-auto px-6 py-6">
+    <div class="flex flex-col lg:flex-row gap-6">
+      <!-- Mobile Filter Toggle -->
+      <div class="lg:hidden">
+        <button class="btn btn-outline w-full" onclick="toggleMobileFilters()">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          Filters & Sort
+        </button>
+      </div>
+
+      <!-- Desktop Filters -->
+      <div id="desktop-filters" class="hidden lg:flex flex-wrap gap-4 flex-1">
+        <!-- Price Filter -->
+        {% if section.settings.enable_price_filter %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+              Price
+            </label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="?sort_by=price-ascending">Low to High</a></li>
+              <li><a href="?sort_by=price-descending">High to Low</a></li>
+              <li><a href="?price_min=0&price_max=100">Under $100</a></li>
+              <li><a href="?price_min=100&price_max=300">$100 - $300</a></li>
+              <li><a href="?price_min=300&price_max=500">$300 - $500</a></li>
+              <li><a href="?price_min=500">Over $500</a></li>
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Availability Filter -->
+        {% if section.settings.enable_availability_filter %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Availability
+            </label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="?availability=in_stock">In Stock</a></li>
+              <li><a href="?availability=on_sale">On Sale</a></li>
+              <li><a href="?availability=new_arrivals">New Arrivals</a></li>
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Brand Filter -->
+        {% if section.settings.enable_brand_filter and collection.all_vendors.size > 0 %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+              </svg>
+              Brand
+            </label>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 max-h-64 overflow-y-auto"
+            >
+              {% for vendor in collection.all_vendors %}
+                <li>
+                  <a href="?vendor={{ vendor | url_encode }}">{{ vendor }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Product Type Filter -->
+        {% if section.settings.enable_type_filter and collection.all_types.size > 0 %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+              </svg>
+              Type
+            </label>
+            <ul
+              tabindex="0"
+              class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 max-h-64 overflow-y-auto"
+            >
+              {% for type in collection.all_types %}
+                <li>
+                  <a href="?type={{ type | url_encode }}">{{ type }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Color Filter -->
+        {% if section.settings.enable_color_filter %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+              </svg>
+              Color
+            </label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="?color=red">Red</a></li>
+              <li><a href="?color=blue">Blue</a></li>
+              <li><a href="?color=green">Green</a></li>
+              <li><a href="?color=black">Black</a></li>
+              <li><a href="?color=white">White</a></li>
+              <li><a href="?color=gray">Gray</a></li>
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Size Filter -->
+        {% if section.settings.enable_size_filter %}
+          <div class="dropdown dropdown-hover">
+            <label tabindex="0" class="btn btn-outline btn-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+              </svg>
+              Size
+            </label>
+            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a href="?size=xs">XS</a></li>
+              <li><a href="?size=s">S</a></li>
+              <li><a href="?size=m">M</a></li>
+              <li><a href="?size=l">L</a></li>
+              <li><a href="?size=xl">XL</a></li>
+              <li><a href="?size=xxl">XXL</a></li>
+            </ul>
+          </div>
+        {% endif %}
+
+        <!-- Sort Options -->
+        <div class="dropdown dropdown-hover ml-auto">
+          <label tabindex="0" class="btn btn-outline btn-sm">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path>
+            </svg>
+            Sort by
+          </label>
+          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li><a href="?sort_by=best-selling">Best Selling</a></li>
+            <li><a href="?sort_by=title-ascending">Name A-Z</a></li>
+            <li><a href="?sort_by=title-descending">Name Z-A</a></li>
+            <li><a href="?sort_by=price-ascending">Price Low to High</a></li>
+            <li><a href="?sort_by=price-descending">Price High to Low</a></li>
+            <li><a href="?sort_by=created-descending">Newest</a></li>
+            <li><a href="?sort_by=created-ascending">Oldest</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Filters Panel -->
+    <div id="mobile-filters" class="hidden lg:hidden mt-6 p-6 bg-base-100 rounded-2xl shadow-lg">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Mobile Price Filter -->
+        {% if section.settings.enable_price_filter %}
+          <div>
+            <h4 class="font-semibold mb-3">Price Range</h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3">
+                <input type="radio" name="mobile_price" value="all" class="radio radio-primary" checked>
+                <span>All Prices</span>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="radio" name="mobile_price" value="under-100" class="radio radio-primary">
+                <span>Under $100</span>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="radio" name="mobile_price" value="100-300" class="radio radio-primary">
+                <span>$100 - $300</span>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="radio" name="mobile_price" value="over-300" class="radio radio-primary">
+                <span>Over $300</span>
+              </label>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Mobile Availability Filter -->
+        {% if section.settings.enable_availability_filter %}
+          <div>
+            <h4 class="font-semibold mb-3">Availability</h4>
+            <div class="space-y-2">
+              <label class="flex items-center gap-3">
+                <input type="checkbox" class="checkbox checkbox-primary" checked>
+                <span>In Stock</span>
+              </label>
+              <label class="flex items-center gap-3">
+                <input type="checkbox" class="checkbox checkbox-primary">
+                <span>On Sale</span>
+              </label>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="flex gap-4 mt-6">
+        <button class="btn btn-primary flex-1" onclick="applyMobileFilters()">Apply Filters</button>
+        <button class="btn btn-outline flex-1" onclick="clearMobileFilters()">Clear All</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+  function toggleMobileFilters() {
+    const mobileFilters = document.getElementById('mobile-filters');
+    mobileFilters.classList.toggle('hidden');
+  }
+
+  function applyMobileFilters() {
+    // Apply mobile filters logic
+    console.log('Applying mobile filters...');
+    toggleMobileFilters();
+  }
+
+  function clearMobileFilters() {
+    // Clear all mobile filter inputs
+    document.querySelectorAll('#mobile-filters input').forEach((input) => {
+      if (input.type === 'radio') {
+        input.checked = false;
+      } else if (input.type === 'checkbox') {
+        input.checked = false;
+      }
+    });
+
+    // Reset to default state
+    const allPriceRadio = document.querySelector('input[name="mobile_price"][value="all"]');
+    if (allPriceRadio) allPriceRadio.checked = true;
+
+    const inStockCheckbox = document.querySelector('#mobile-filters input[type="checkbox"]');
+    if (inStockCheckbox) inStockCheckbox.checked = true;
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Collection Filters",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Filter Options"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_price_filter",
+      "label": "Enable price filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_availability_filter",
+      "label": "Enable availability filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_brand_filter",
+      "label": "Enable brand filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_type_filter",
+      "label": "Enable product type filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_color_filter",
+      "label": "Enable color filter",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_size_filter",
+      "label": "Enable size filter",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Filters"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,72 @@
+{% comment %}
+  This section is used in the search template to render search results for
+  products, articles, and pages.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
+{% endcomment %}
+
+<div class="container mx-auto p-6">
+  <h1 class="text-4xl font-bold mb-8">{{ 'search.title' | t }}</h1>
+
+  <form action="{{ routes.search_url }}" method="get" role="search" class="mb-8">
+    <div class="join w-full">
+      <input
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'search.placeholder' | t }}"
+        class="input input-bordered join-item flex-1"
+      >
+      <button type="submit" class="btn btn-primary join-item">{{ 'search.submit' | t }}</button>
+    </div>
+  </form>
+
+  {% if search.performed %}
+    {% if search.results_count == 0 %}
+      <div class="alert alert-info">
+        <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+      </div>
+    {% else %}
+      <p class="mb-6">{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% paginate search.results by 20 %}
+          {% for result in search.results %}
+            <div class="card bg-base-100 shadow-xl">
+              {% assign featured_image = result.featured_image | default: result.image %}
+              {% if featured_image %}
+                <figure class="px-10 pt-10">
+                  {% render 'image', class: 'rounded-xl', image: featured_image, url: result.url, width: 400 %}
+                </figure>
+              {% endif %}
+              <div class="card-body">
+                <h2 class="card-title">{{ result.title | link_to: result.url }}</h2>
+                {% if result.price %}
+                  <p class="text-lg font-semibold text-primary">{{ result.price | money_with_currency }}</p>
+                {% endif %}
+                <div class="card-actions justify-end">
+                  <a href="{{ result.url }}" class="btn btn-primary">查看详情</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="col-span-full flex justify-center mt-8">
+            {{ paginate | default_pagination }}
+          </div>
+        {% endpaginate %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  /* daisyUI组件样式已足够，无需额外CSS */
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.search",
+  "settings": []
+}
+{% endschema %}

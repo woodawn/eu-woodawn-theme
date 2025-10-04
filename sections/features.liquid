@@ -1,0 +1,174 @@
+{% comment %}
+  Features section inspired by Typhur's feature showcase
+  Features: Icon-based feature cards with modern design
+{% endcomment %}
+
+<div class="py-20 bg-base-200">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+        {{ section.settings.heading | default: 'Why Choose Our Products?' }}
+      </h2>
+      <p class="text-xl text-base-content/70 max-w-2xl mx-auto">
+        {{
+          section.settings.subheading
+          | default: 'Experience the difference with our innovative technology and premium quality products.'
+        }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for block in section.blocks %}
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+          <div class="card-body text-center">
+            <div class="avatar placeholder mb-6">
+              <div class="bg-primary text-primary-content rounded-full w-16">
+                {% if block.settings.icon == 'smart' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                  </svg>
+                {% elsif block.settings.icon == 'energy' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                {% elsif block.settings.icon == 'quality' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                {% elsif block.settings.icon == 'warranty' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                  </svg>
+                {% elsif block.settings.icon == 'support' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"></path>
+                  </svg>
+                {% elsif block.settings.icon == 'shipping' %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                  </svg>
+                {% else %}
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                {% endif %}
+              </div>
+            </div>
+
+            <h3 class="card-title text-xl mb-4">{{ block.settings.title }}</h3>
+            <p class="text-base-content/70">{{ block.settings.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Features",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why Choose Our Products?"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Experience the difference with our innovative technology and premium quality products."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Smart Technology"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Advanced AI-powered features that make cooking effortless and precise."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "smart", "label": "Smart Technology" },
+            { "value": "energy", "label": "Energy Efficient" },
+            { "value": "quality", "label": "Premium Quality" },
+            { "value": "warranty", "label": "Warranty" },
+            { "value": "support", "label": "24/7 Support" },
+            { "value": "shipping", "label": "Free Shipping" }
+          ],
+          "default": "smart"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Smart Technology",
+            "description": "Advanced AI-powered features that make cooking effortless and precise.",
+            "icon": "smart"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Energy Efficient",
+            "description": "Save up to 40% on energy costs with our innovative power management system.",
+            "icon": "energy"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Premium Quality",
+            "description": "Built with the finest materials and rigorous quality control standards.",
+            "icon": "quality"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "5-Year Warranty",
+            "description": "Comprehensive warranty coverage for complete peace of mind.",
+            "icon": "warranty"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "24/7 Support",
+            "description": "Round-the-clock customer support to help you whenever you need it.",
+            "icon": "support"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "title": "Free Shipping",
+            "description": "Complimentary shipping on all orders over $99 with fast delivery.",
+            "icon": "shipping"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

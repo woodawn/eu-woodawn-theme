@@ -1,0 +1,40 @@
+<div class="custom-section full-width relative overflow-hidden">
+  {% if section.settings.background_image %}
+    <div class="absolute inset-0 w-full h-full -z-10 overflow-hidden">
+      {{
+        section.settings.background_image
+        | image_url: width: 2000
+        | image_tag: class: 'absolute w-full h-auto top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+      }}
+    </div>
+  {% endif %}
+
+  <div class="custom-section__content grid grid-cols-[var(--content-grid)]">
+    <div class="col-start-2">
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* 使用Tailwind CSS类，无需额外CSS */
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.custom_section",
+  "blocks": [{ "type": "@theme" }],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "t:labels.background"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.custom_section"
+    }
+  ]
+}
+{% endschema %}

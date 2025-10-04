@@ -1,0 +1,766 @@
+{% comment %}
+  Typhur-inspired Product Page
+  Features: Image gallery, variant selector, specifications, reviews, and modern design
+{% endcomment %}
+
+<div class="min-h-screen bg-base-100">
+  <!-- Product Hero Section -->
+  <div class="container mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Product Images -->
+      <div class="product-gallery">
+        <!-- Main Image -->
+        <div class="mb-6">
+          <div class="relative overflow-hidden rounded-2xl shadow-2xl bg-base-200">
+            {% if product.featured_image %}
+              <img
+                id="main-product-image"
+                src="{{ product.featured_image | image_url: width: 800 }}"
+                alt="{{ product.featured_image.alt | default: product.title }}"
+                class="w-full h-96 lg:h-[500px] object-cover cursor-zoom-in"
+                width="800"
+                height="500"
+                onclick="openImageModal(this.src)"
+              >
+            {% endif %}
+
+            <!-- Image Zoom Indicator -->
+            <div class="absolute top-4 right-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
+              <div class="bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                </svg>
+                Click to zoom
+              </div>
+            </div>
+
+            <!-- Sale Badge -->
+            {% if product.compare_at_price > product.price %}
+              <div class="absolute top-4 left-4">
+                <div class="badge badge-error badge-lg">
+                  {{
+                    product.compare_at_price
+                    | minus: product.price
+                    | times: 100
+                    | divided_by: product.compare_at_price
+                    | round
+                  -}}
+                  % OFF
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Thumbnail Images -->
+        {% if product.images.size > 1 %}
+          <div class="grid grid-cols-4 gap-3">
+            {% for image in product.images limit: 4 %}
+              <div
+                class="relative overflow-hidden rounded-lg cursor-pointer border-2 transition-all duration-300 {% if forloop.first %}border-primary{% else %}border-transparent{% endif %}"
+                onclick="changeMainImage('{{ image | image_url: width: 800 }}', this)"
+              >
+                <img
+                  src="{{ image | image_url: width: 200 }}"
+                  alt="{{ image.alt | default: product.title }}"
+                  class="w-full h-20 object-cover hover:scale-105 transition-transform duration-300"
+                  width="200"
+                  height="80"
+                >
+              </div>
+            {% endfor %}
+
+            {% if product.images.size > 4 %}
+              <div
+                class="relative overflow-hidden rounded-lg border-2 border-dashed border-base-300 flex items-center justify-center cursor-pointer"
+                onclick="showAllImages()"
+              >
+                <div class="text-center">
+                  <div class="text-2xl font-bold text-base-content/50">+{{ product.images.size | minus: 4 }}</div>
+                  <div class="text-xs text-base-content/50">More</div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Information -->
+      <div class="product-info">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumbs text-sm mb-6">
+          <ul>
+            <li><a href="{{ routes.root_url }}" class="hover:text-primary">Home</a></li>
+            {% if collection %}
+              <li>
+                <a href="{{ collection.url }}" class="hover:text-primary">{{ collection.title }}</a>
+              </li>
+            {% endif %}
+            <li>{{ product.title }}</li>
+          </ul>
+        </nav>
+
+        <!-- Product Title -->
+        <h1 class="text-3xl lg:text-4xl font-bold mb-4">{{ product.title }}</h1>
+
+        <!-- Product Rating -->
+        {% if product.metafields.reviews.rating.value %}
+          <div class="flex items-center gap-3 mb-4">
+            <div class="rating rating-sm">
+              {% assign rating = product.metafields.reviews.rating.value %}
+              {% for i in (1..5) %}
+                {% if i <= rating %}
+                  <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                {% else %}
+                  <input type="radio" class="mask mask-star-2 bg-base-300" disabled>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <span class="text-sm text-base-content/70">
+              {{ product.metafields.reviews.rating.value }}/5 (
+              {{- product.metafields.reviews.rating_count.value }}
+              reviews)
+            </span>
+            <a href="#reviews" class="text-sm text-primary hover:underline">View Reviews</a>
+          </div>
+        {% endif %}
+
+        <!-- Price -->
+        <div class="mb-6">
+          {% if product.compare_at_price > product.price %}
+            <div class="flex items-center gap-3">
+              <span class="text-3xl font-bold text-primary">{{ product.price | money }}</span>
+              <span class="text-xl text-base-content/50 line-through">{{ product.compare_at_price | money }}</span>
+              <span class="badge badge-success"
+                >Save {{ product.compare_at_price | minus: product.price | money -}}
+              </span>
+            </div>
+          {% else %}
+            <span class="text-3xl font-bold text-primary">{{ product.price | money }}</span>
+          {% endif %}
+        </div>
+
+        <!-- Product Description -->
+        {% if product.description != blank %}
+          <div class="prose max-w-none mb-6">
+            {{ product.description }}
+          </div>
+        {% endif %}
+
+        <!-- Product Form -->
+        <div class="product-form mb-8">
+          {% form 'product', product, class: 'space-y-6' %}
+            {% assign current_variant = product.selected_or_first_available_variant %}
+
+            <!-- Variant Selection -->
+            {% if product.variants.size > 1 %}
+              <div class="space-y-4">
+                {% for option in product.options_with_values %}
+                  <div class="form-control">
+                    <label class="label">
+                      <span class="label-text font-semibold">{{ option.name }}</span>
+                    </label>
+                    <div class="flex flex-wrap gap-2">
+                      {% for value in option.values %}
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm variant-option"
+                          data-option="{{ option.name }}"
+                          data-value="{{ value }}"
+                          onclick="selectVariant('{{ option.name }}', '{{ value }}')"
+                        >
+                          {{ value }}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <!-- Quantity -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold">Quantity</span>
+              </label>
+              <div class="flex items-center gap-3">
+                <button type="button" class="btn btn-outline btn-sm" onclick="decreaseQuantity()">-</button>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  value="1"
+                  class="input input-bordered w-20 text-center"
+                  readonly
+                >
+                <button type="button" class="btn btn-outline btn-sm" onclick="increaseQuantity()">+</button>
+              </div>
+            </div>
+
+            <!-- Add to Cart -->
+            <div class="space-y-3">
+              {% if current_variant.available %}
+                <button type="submit" class="btn btn-primary btn-lg w-full">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                  </svg>
+                  Add to Cart - {{ current_variant.price | money }}
+                </button>
+                {{ form | payment_button }}
+              {% else %}
+                <button class="btn btn-disabled btn-lg w-full">Sold Out</button>
+              {% endif %}
+            </div>
+
+            <!-- Product Features -->
+            <div class="grid grid-cols-2 gap-4 mt-6">
+              <div class="flex items-center gap-2 text-sm">
+                <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>Free Shipping</span>
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>30-Day Returns</span>
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>2-Year Warranty</span>
+              </div>
+              <div class="flex items-center gap-2 text-sm">
+                <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span>24/7 Support</span>
+              </div>
+            </div>
+          {% endform %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Details Tabs -->
+  <div class="container mx-auto px-6 py-16">
+    <div class="tabs tabs-boxed justify-center mb-8">
+      <a class="tab tab-active" onclick="showTab('specifications')">Specifications</a>
+      <a class="tab" onclick="showTab('features')">Key Features</a>
+      <a class="tab" onclick="showTab('reviews')">Reviews</a>
+      <a class="tab" onclick="showTab('shipping')">Shipping & Returns</a>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+      <!-- Specifications Tab -->
+      <div id="specifications-tab" class="tab-content">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">Technical Specifications</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="font-medium">Temperature Range</span>
+                  <span>32°F - 932°F</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-medium">Accuracy</span>
+                  <span>±0.5°F</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-medium">Range</span>
+                  <span>3000 ft (open)</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-medium">Battery Life</span>
+                  <span>24+ hours</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-medium">Waterproof</span>
+                  <span>IPX8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">What's Included</h3>
+              <ul class="space-y-2">
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Device Base Station
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  2x Temperature Probes
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  USB-C Charging Cable
+                </li>
+                <li class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  User Manual
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Tab -->
+      <div id="features-tab" class="tab-content hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">📡</div>
+              <h3 class="card-title justify-center">Long Range</h3>
+              <p>Monitor your cooking from up to 3000 feet away with Sub-1G technology.</p>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">🎯</div>
+              <h3 class="card-title justify-center">High Precision</h3>
+              <p>Six sensors per probe deliver ±0.5°F accuracy for perfect results.</p>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">🔋</div>
+              <h3 class="card-title justify-center">Long Battery</h3>
+              <p>24+ hours of continuous monitoring on a single charge.</p>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">💧</div>
+              <h3 class="card-title justify-center">Waterproof</h3>
+              <p>IPX8 rating means it can handle any cooking environment.</p>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">📱</div>
+              <h3 class="card-title justify-center">Smart App</h3>
+              <p>Control temperature settings and monitor progress via mobile app.</p>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body text-center">
+              <div class="text-4xl mb-4">🛡️</div>
+              <h3 class="card-title justify-center">Durable</h3>
+              <p>Built to withstand temperatures up to 932°F for any cooking method.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Tab -->
+      <div id="reviews-tab" class="tab-content hidden">
+        <div class="space-y-6">
+          <!-- Review Summary -->
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="card-title">Customer Reviews</h3>
+                <div class="text-right">
+                  <div class="text-3xl font-bold">4.8</div>
+                  <div class="rating rating-sm">
+                    <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                    <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                    <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                    <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                    <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                  </div>
+                  <div class="text-sm text-base-content/70">Based on 127 reviews</div>
+                </div>
+              </div>
+
+              <!-- Rating Breakdown -->
+              <div class="space-y-2">
+                {% for i in (5..1) %}
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 text-sm">{{ i }}★</span>
+                    <div class="flex-1 bg-base-200 rounded-full h-2">
+                      <div class="bg-warning h-2 rounded-full" style="width: {{ i | times: 20 }}%"></div>
+                    </div>
+                    <span class="w-8 text-sm text-right">{{ i | times: 25 }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Individual Reviews -->
+          <div class="space-y-4">
+            {% for i in (1..3) %}
+              <div class="card bg-base-100 shadow-lg">
+                <div class="card-body">
+                  <div class="flex items-start gap-4">
+                    <div class="avatar">
+                      <div class="w-12 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="text-primary font-bold">U{{ i }}</span>
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="font-semibold">Customer {{ i }}</span>
+                        <div class="rating rating-xs">
+                          {% for j in (1..5) %}
+                            <input type="radio" class="mask mask-star-2 bg-warning" disabled>
+                          {% endfor %}
+                        </div>
+                        <span class="text-sm text-base-content/70">Verified Purchase</span>
+                      </div>
+                      <p class="text-sm text-base-content/70 mb-2">2 days ago</p>
+                      <p>
+                        This is an excellent product! The range is incredible and the accuracy is spot on. Highly
+                        recommend for serious cooks.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping Tab -->
+      <div id="shipping-tab" class="tab-content hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">Shipping Information</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>Free shipping on orders over $50</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>2-3 business days delivery</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>Tracking information provided</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-base-100 shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">Return Policy</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>30-day return window</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>Free return shipping</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span>Full refund guarantee</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <div class="bg-base-200/50 py-16">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">You might also like</h2>
+        <p class="text-lg text-base-content/70">Complete your cooking setup with these related products</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for related_product in collections[product.collections.first.handle].products limit: 4 %}
+          {% unless related_product.id == product.id %}
+            <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <figure class="relative overflow-hidden">
+                {% if related_product.featured_image %}
+                  <img
+                    src="{{ related_product.featured_image | image_url: width: 300 }}"
+                    alt="{{ related_product.featured_image.alt | default: related_product.title }}"
+                    class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    width="300"
+                    height="192"
+                    loading="lazy"
+                  >
+                {% endif %}
+
+                {% if related_product.compare_at_price > related_product.price %}
+                  <div class="absolute top-3 left-3">
+                    <div class="badge badge-error badge-sm">
+                      {{
+                        related_product.compare_at_price
+                        | minus: related_product.price
+                        | times: 100
+                        | divided_by: related_product.compare_at_price
+                        | round
+                      -}}
+                      % OFF
+                    </div>
+                  </div>
+                {% endif %}
+              </figure>
+
+              <div class="card-body">
+                <h3 class="card-title text-base line-clamp-2">
+                  <a href="{{ related_product.url }}" class="hover:text-primary transition-colors">
+                    {{ related_product.title }}
+                  </a>
+                </h3>
+
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex items-center gap-2">
+                    {% if related_product.compare_at_price > related_product.price %}
+                      <span class="text-lg font-bold text-primary">{{ related_product.price | money }}</span>
+                      <span class="text-sm text-base-content/50 line-through">
+                        {{- related_product.compare_at_price | money -}}
+                      </span>
+                    {% else %}
+                      <span class="text-lg font-bold text-primary">{{ related_product.price | money }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="card-actions justify-end mt-4">
+                  <a href="{{ related_product.url }}" class="btn btn-outline btn-sm">View Details</a>
+                </div>
+              </div>
+            </div>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div id="image-modal" class="modal">
+  <div class="modal-box max-w-4xl">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Product Image</h3>
+      <button class="btn btn-sm btn-circle btn-ghost" onclick="closeImageModal()">✕</button>
+    </div>
+    <img id="modal-image" src="" alt="" class="w-full h-auto rounded-lg" width="800" height="600">
+  </div>
+  <div class="modal-backdrop" onclick="closeImageModal()"></div>
+</div>
+
+{% stylesheet %}
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tab-content {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .variant-option.selected {
+    background-color: hsl(var(--p));
+    color: hsl(var(--pc));
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Image Gallery Functions
+  function changeMainImage(imageSrc, thumbnail) {
+    document.getElementById('main-product-image').src = imageSrc;
+
+    // Update thumbnail selection
+    document.querySelectorAll('.product-gallery .grid > div').forEach((thumb) => {
+      thumb.classList.remove('border-primary');
+      thumb.classList.add('border-transparent');
+    });
+    thumbnail.classList.remove('border-transparent');
+    thumbnail.classList.add('border-primary');
+  }
+
+  function openImageModal(imageSrc) {
+    document.getElementById('modal-image').src = imageSrc;
+    document.getElementById('image-modal').classList.add('modal-open');
+  }
+
+  function closeImageModal() {
+    document.getElementById('image-modal').classList.remove('modal-open');
+  }
+
+  function showAllImages() {
+    // Implement show all images functionality
+    console.log('Show all images');
+  }
+
+  // Tab Functions
+  function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach((content) => {
+      content.classList.add('hidden');
+    });
+
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab').forEach((tab) => {
+      tab.classList.remove('tab-active');
+    });
+
+    // Show selected tab content
+    document.getElementById(tabName + '-tab').classList.remove('hidden');
+
+    // Add active class to clicked tab
+    event.target.classList.add('tab-active');
+  }
+
+  // Quantity Functions
+  function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    quantityInput.value = currentValue + 1;
+  }
+
+  function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    if (currentValue > 1) {
+      quantityInput.value = currentValue - 1;
+    }
+  }
+
+  // Variant Selection Functions
+  function selectVariant(optionName, value) {
+    // Remove selected class from all options for this option name
+    document.querySelectorAll(`[data-option="${optionName}"]`).forEach((btn) => {
+      btn.classList.remove('selected');
+    });
+
+    // Add selected class to clicked option
+    event.target.classList.add('selected');
+
+    // Update variant selection logic here
+    console.log(`Selected ${optionName}: ${value}`);
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', function () {
+    // Set initial variant options as selected
+    document.querySelectorAll('.variant-option').forEach((btn) => {
+      if (btn.textContent.trim() === 'Default') {
+        btn.classList.add('selected');
+      }
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Product Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_rating",
+      "label": "Show product rating",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_features",
+      "label": "Show product features",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_specifications",
+      "label": "Show specifications",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show reviews",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Related Products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related_products",
+      "label": "Show related products",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "related_products_count",
+      "label": "Number of related products",
+      "min": 2,
+      "max": 8,
+      "step": 2,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Page"
+    }
+  ]
+}
+{% endschema %}

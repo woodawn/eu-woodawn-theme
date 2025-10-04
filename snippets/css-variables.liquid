@@ -1,0 +1,50 @@
+{% style %}
+  {% # Loads all font variantions with display: swap %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+  :root {
+    /* Font Variables */
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+
+    /* Layout Variables */
+    --page-width: {{ settings.max_page_width }};
+    --page-margin: {{ settings.min_page_margin }}px;
+
+    /* daisyUI 5 Color System */
+    --color-primary: {{ settings.color_primary }};
+    --color-primary-content: {{ settings.color_primary_content }};
+    --color-secondary: {{ settings.color_secondary }};
+    --color-secondary-content: {{ settings.color_secondary_content }};
+    --color-accent: {{ settings.color_accent }};
+    --color-accent-content: {{ settings.color_accent_content }};
+    --color-neutral: {{ settings.color_neutral }};
+    --color-neutral-content: {{ settings.color_neutral_content }};
+    --color-base-100: {{ settings.color_base_100 }};
+    --color-base-200: {{ settings.color_base_200 }};
+    --color-base-300: {{ settings.color_base_300 }};
+    --color-base-content: {{ settings.color_base_content }};
+    --color-info: {{ settings.color_info }};
+    --color-info-content: {{ settings.color_info_content }};
+    --color-success: {{ settings.color_success }};
+    --color-success-content: {{ settings.color_success_content }};
+    --color-warning: {{ settings.color_warning }};
+    --color-warning-content: {{ settings.color_warning_content }};
+    --color-error: {{ settings.color_error }};
+    --color-error-content: {{ settings.color_error_content }};
+
+    /* Component Variables */
+    --radius-selector: {{ settings.radius_selector }}px;
+    --radius-field: {{ settings.radius_field }}px;
+    --radius-box: {{ settings.radius_box }}px;
+    --size-selector: {{ settings.size_selector }}px;
+    --size-field: {{ settings.size_field }}px;
+    --border: {{ settings.border_width }}px;
+    --depth: {{ settings.depth }};
+    --noise: {{ settings.noise }};
+  }
+{% endstyle %}

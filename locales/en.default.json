@@ -33,7 +33,117 @@
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
-      "title": "Login"
+      "title": "Login",
+      "remember_me": "Remember me",
+      "create_account": "Create account",
+      "forgot_password": "Forgot your password?"
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "accepts_marketing": "Email me with news and offers",
+      "submit": "Create",
+      "login_link": "Sign in"
+    },
+    "recover_password": {
+      "title": "Reset your password",
+      "subtext": "We will send you an email to reset your password",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "success": "We've sent you an email with a link to update your password."
+    },
+    "activate_account": {
+      "title": "Activate account",
+      "subtext": "Create your password to activate your account.",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Activate account",
+      "decline": "Decline invitation"
+    },
+    "reset_password": {
+      "title": "Reset account password",
+      "subtext": "Enter a new password for {{ email }}",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Reset password",
+      "back_to_login": "Back to login"
+    },
+    "account": {
+      "title": "Account",
+      "welcome": "Welcome back, {{ first_name }}!",
+      "details": "Account details",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "edit_details": "Edit details",
+      "addresses": "Addresses",
+      "addresses_count": "{{ count }} address",
+      "addresses_count_other": "{{ count }} addresses",
+      "manage_addresses": "Manage addresses",
+      "orders": "Orders",
+      "orders_count": "{{ count }} order",
+      "orders_count_other": "{{ count }} orders",
+      "view_orders": "View orders",
+      "recent_orders": "Recent orders",
+      "logout": "Log out"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "return_to_account": "Return to account details",
+      "add_new": "Add a new address",
+      "add": "Add address",
+      "edit": "Edit",
+      "delete": "Delete",
+      "set_default": "Set as default address",
+      "default": "Default",
+      "cancel": "Cancel",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "company": "Company",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "city": "City",
+      "country": "Country",
+      "province": "Province",
+      "zip": "Postal/ZIP code",
+      "phone": "Phone",
+      "none": "You haven't saved any addresses yet.",
+      "none_description": "Your addresses will appear here.",
+      "delete_confirm": "Are you sure you wish to delete this address?"
+    },
+    "orders": {
+      "title": "Order history",
+      "order_number": "Order",
+      "date": "Date",
+      "payment_status": "Payment status",
+      "fulfillment_status": "Fulfillment status",
+      "total": "Total",
+      "actions": "Actions",
+      "view": "View",
+      "quantity": "Quantity",
+      "fulfilled": "Fulfilled",
+      "tracking_number": "Tracking number",
+      "track_shipment": "Track shipment"
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "return_to_account": "Return to account details",
+      "order_date": "Order date",
+      "payment_status": "Payment status",
+      "fulfillment_status": "Fulfillment status",
+      "items": "Order items",
+      "summary": "Order summary",
+      "shipping_address": "Shipping address",
+      "billing_address": "Billing address",
+      "totals": "Order totals",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total": "Total"
     }
   },
   "collections": {
@@ -140,5 +250,12 @@
     "view_details": "View details",
     "quantity": "Quantity",
     "add_to_cart": "Add to cart"
+  },
+  "templates": {
+    "contact": {
+      "form": {
+        "error_heading": "Please correct the following errors:"
+      }
+    }
   }
 }

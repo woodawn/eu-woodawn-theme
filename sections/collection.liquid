@@ -122,12 +122,24 @@
                 {{ 'collections.sorting.title' | t }}
               </label>
               <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a href="?sort_by=best-selling">{{ 'collections.sorting.best_selling' | t }}</a></li>
-                <li><a href="?sort_by=title-ascending">{{ 'collections.sorting.name_asc' | t }}</a></li>
-                <li><a href="?sort_by=title-descending">{{ 'collections.sorting.name_desc' | t }}</a></li>
-                <li><a href="?sort_by=price-ascending">{{ 'collections.sorting.price_asc' | t }}</a></li>
-                <li><a href="?sort_by=price-descending">{{ 'collections.sorting.price_desc' | t }}</a></li>
-                <li><a href="?sort_by=created-descending">{{ 'collections.sorting.newest' | t }}</a></li>
+                <li>
+                  <a href="?sort_by=best-selling">{{ 'collections.sorting.best_selling' | t }}</a>
+                </li>
+                <li>
+                  <a href="?sort_by=title-ascending">{{ 'collections.sorting.name_asc' | t }}</a>
+                </li>
+                <li>
+                  <a href="?sort_by=title-descending">{{ 'collections.sorting.name_desc' | t }}</a>
+                </li>
+                <li>
+                  <a href="?sort_by=price-ascending">{{ 'collections.sorting.price_asc' | t }}</a>
+                </li>
+                <li>
+                  <a href="?sort_by=price-descending">{{ 'collections.sorting.price_desc' | t }}</a>
+                </li>
+                <li>
+                  <a href="?sort_by=created-descending">{{ 'collections.sorting.newest' | t }}</a>
+                </li>
               </ul>
             </div>
 
@@ -294,7 +306,9 @@
                   </svg>
                   <h3 class="text-xl font-semibold mb-2">{{ 'collections.no_products.title' | t }}</h3>
                   <p class="text-base-content/70 mb-6">{{ 'collections.no_products.description' | t }}</p>
-                  <button class="btn btn-primary" onclick="clearAllFilters()">{{ 'collections.filters.clear' | t }}</button>
+                  <button class="btn btn-primary" onclick="clearAllFilters()">
+                    {{ 'collections.filters.clear' | t }}
+                  </button>
                 </div>
               </div>
             {% endfor %}

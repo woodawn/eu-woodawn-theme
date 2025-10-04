@@ -1,0 +1,79 @@
+{% comment %}
+  Wishlist Page Section
+  Displays user's wishlist items
+{% endcomment %}
+
+<div class="container mx-auto px-6 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-4xl font-bold">{{ section.settings.heading | default: 'My Wishlist' }}</h1>
+    
+    {% if section.settings.show_clear_button %}
+      <button 
+        class="btn btn-outline btn-error"
+        data-wishlist-clear
+        onclick="if(confirm('Are you sure you want to clear your wishlist?')) { window.wishlistManager.clearWishlist(); }"
+      >
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+        </svg>
+        Clear Wishlist
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="wishlist-items">
+    <!-- Wishlist items will be populated by JavaScript -->
+    <div class="text-center py-12">
+      <div class="loading loading-spinner loading-lg"></div>
+      <p class="mt-4">Loading wishlist...</p>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .wishlist-items {
+    min-height: 400px;
+  }
+  
+  .wishlist-items .card {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .wishlist-items .card:hover {
+    transform: translateY(-2px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Wishlist Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Page heading",
+      "default": "My Wishlist"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_clear_button",
+      "label": "Show clear wishlist button",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wishlist Page"
+    }
+  ]
+}
+{% endschema %}

@@ -61,6 +61,16 @@
         </div>
       </div>
 
+      <!-- Wishlist button -->
+      <div class="indicator">
+        <a href="/pages/wishlist" class="btn btn-ghost btn-circle">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+        </a>
+        <span class="badge badge-primary badge-sm indicator-item" data-wishlist-count style="display: none;">0</span>
+      </div>
+
       {% if shop.customer_accounts_enabled %}
         <a href="{{ routes.account_url }}" class="btn btn-ghost btn-circle">
           {{ 'icon-account.svg' | inline_asset_content }}

@@ -39,13 +39,15 @@
 </div>
 
 <!-- Cart Drawer Backdrop -->
-<div class="cart-drawer-backdrop fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<div
+  class="cart-drawer-backdrop fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+></div>
 
 <style>
   .cart-drawer.open {
     transform: translateX(0);
   }
-  
+
   .cart-drawer.open + .cart-drawer-backdrop {
     opacity: 1;
     pointer-events: auto;

@@ -1,12 +1,12 @@
 {% comment %}
   Wishlist Button - Add/remove product from wishlist
-  
+
   Accepts:
   - product: {Object} Product object
   - class: {String} CSS classes to apply
   - size: {String} Button size (sm, md, lg)
   - show_text: {Boolean} Show text label
-  
+
   Usage:
   {% render 'wishlist-button', product: product %}
   {% render 'wishlist-button', product: product, size: 'sm', show_text: true %}
@@ -16,13 +16,13 @@
   assign button_size = size | default: 'md'
   assign show_label = show_text | default: false
   assign button_class = 'btn btn-circle btn-ghost'
-  
+
   if button_size == 'sm'
     assign button_class = button_class | append: ' btn-sm'
   elsif button_size == 'lg'
     assign button_class = button_class | append: ' btn-lg'
   endif
-  
+
   if class
     assign button_class = button_class | append: ' ' | append: class
   endif
@@ -51,11 +51,11 @@
   .wishlist-button.wishlist-active {
     color: #ef4444;
   }
-  
+
   .wishlist-button.wishlist-active svg {
     fill: currentColor;
   }
-  
+
   .wishlist-button:hover {
     color: #ef4444;
   }

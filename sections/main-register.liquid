@@ -1,0 +1,126 @@
+{% comment %}
+  This section is used in the customer register template to render the registration form.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/customers/register
+{% endcomment %}
+
+<div class="container mx-auto p-6 max-w-md">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h1 class="card-title text-2xl mb-6">{{ 'customers.register.title' | t }}</h1>
+
+      {% form 'create_customer', class: 'space-y-4' %}
+        {% if form.errors %}
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold">{{ 'templates.contact.form.error_heading' | t }}</h3>
+              <div class="text-xs">
+                {{ form.errors | default_errors }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="form-control">
+          <label class="label" for="RegisterFirstName">
+            <span class="label-text">{{ 'customers.register.first_name' | t }}</span>
+          </label>
+          <input
+            type="text"
+            name="customer[first_name]"
+            id="RegisterFirstName"
+            class="input input-bordered w-full"
+            autocomplete="given-name"
+            {% if form.errors contains 'first_name' %}
+              aria-invalid="true"
+              aria-describedby="RegisterFirstName-error"
+            {% endif %}
+            placeholder="{{ 'customers.register.first_name' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="RegisterLastName">
+            <span class="label-text">{{ 'customers.register.last_name' | t }}</span>
+          </label>
+          <input
+            type="text"
+            name="customer[last_name]"
+            id="RegisterLastName"
+            class="input input-bordered w-full"
+            autocomplete="family-name"
+            {% if form.errors contains 'last_name' %}
+              aria-invalid="true"
+              aria-describedby="RegisterLastName-error"
+            {% endif %}
+            placeholder="{{ 'customers.register.last_name' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="RegisterEmail">
+            <span class="label-text">{{ 'customers.register.email' | t }}</span>
+          </label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="RegisterEmail"
+            class="input input-bordered w-full"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="RegisterEmail-error"
+            {% endif %}
+            placeholder="{{ 'customers.register.email' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="RegisterPassword">
+            <span class="label-text">{{ 'customers.register.password' | t }}</span>
+          </label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="RegisterPassword"
+            class="input input-bordered w-full"
+            autocomplete="new-password"
+            {% if form.errors contains 'password' %}
+              aria-invalid="true"
+              aria-describedby="RegisterPassword-error"
+            {% endif %}
+            placeholder="{{ 'customers.register.password' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-2">
+            <input type="checkbox" name="customer[accepts_marketing]" class="checkbox checkbox-sm" />
+            <span class="label-text">{{ 'customers.register.accepts_marketing' | t }}</span>
+          </label>
+        </div>
+
+        <div class="form-control mt-6">
+          <button type="submit" class="btn btn-primary w-full">
+            {{ 'customers.register.submit' | t }}
+          </button>
+        </div>
+
+        <div class="text-center">
+          <a href="{{ routes.account_login_url }}" class="link link-primary">
+            {{ 'customers.register.login_link' | t }}
+          </a>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:customers.register.title",
+  "settings": []
+}
+{% endschema %}

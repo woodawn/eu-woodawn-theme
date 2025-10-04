@@ -1,0 +1,46 @@
+{% comment %}
+  Stock Notify Button - Show notification form for out-of-stock products
+  
+  Accepts:
+  - product: {Object} Product object
+  - variant: {Object} Product variant object (optional)
+  - class: {String} CSS classes to apply
+  
+  Usage:
+  {% render 'stock-notify-button', product: product %}
+  {% render 'stock-notify-button', product: product, variant: variant %}
+{% endcomment %}
+
+{% liquid
+  assign current_variant = variant | default: product.selected_or_first_available_variant
+  assign is_out_of_stock = current_variant.available == false
+%}
+
+{% if is_out_of_stock %}
+  <button
+    class="btn btn-outline btn-sm stock-notify-btn {{ class }}"
+    data-stock-notify
+    data-product-id="{{ product.id }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-image="{{ product.featured_image | image_url: width: 300 }}"
+    title="Notify me when back in stock"
+  >
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4.828 7l2.586 2.586a2 2 0 002.828 0L12.828 7H4.828z"/>
+    </svg>
+    Notify Me
+  </button>
+{% endif %}
+
+<style>
+  .stock-notify-btn.notification-active {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+  }
+  
+  .stock-notify-btn.notification-active:hover {
+    background-color: #059669;
+    border-color: #059669;
+  }
+</style>

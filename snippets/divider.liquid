@@ -2,7 +2,7 @@
   Renders a divider block with configurable style and spacing.
 
   @example
-  {% content_for 'block', type: 'divider', id: 'divider' %}
+  {% render 'divider', block: block %}
 {% enddoc %}
 
 <div class="divider-wrapper {{ block.settings.spacing }}" {{ block.shopify_attributes }}>

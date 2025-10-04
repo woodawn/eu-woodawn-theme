@@ -2,7 +2,7 @@
   Renders a button block with configurable style, size, and behavior.
 
   @example
-  {% content_for 'block', type: 'button', id: 'button' %}
+  {% render 'button', block: block %}
 {% enddoc %}
 
 {% if block.settings.url != blank %}

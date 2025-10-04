@@ -7,12 +7,14 @@ class CartManager {
   constructor() {
     this.cart = null;
     this.cartDrawer = null;
+    this.stickyCart = null;
     this.init();
   }
 
   init() {
     this.bindEvents();
     this.loadCart();
+    this.initStickyCart();
   }
 
   bindEvents() {
@@ -172,6 +174,9 @@ class CartManager {
 
     // Update cart drawer content
     this.updateCartDrawer();
+    
+    // Update sticky cart
+    this.updateStickyCart();
   }
 
   updateCartDrawer() {

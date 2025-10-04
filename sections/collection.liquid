@@ -122,12 +122,12 @@
                 {{ 'collections.sorting.title' | t }}
               </label>
               <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a href="?sort_by=best-selling">Best Selling</a></li>
-                <li><a href="?sort_by=title-ascending">Name A-Z</a></li>
-                <li><a href="?sort_by=title-descending">Name Z-A</a></li>
-                <li><a href="?sort_by=price-ascending">Price Low to High</a></li>
-                <li><a href="?sort_by=price-descending">Price High to Low</a></li>
-                <li><a href="?sort_by=created-descending">Newest</a></li>
+                <li><a href="?sort_by=best-selling">{{ 'collections.sorting.best_selling' | t }}</a></li>
+                <li><a href="?sort_by=title-ascending">{{ 'collections.sorting.name_asc' | t }}</a></li>
+                <li><a href="?sort_by=title-descending">{{ 'collections.sorting.name_desc' | t }}</a></li>
+                <li><a href="?sort_by=price-ascending">{{ 'collections.sorting.price_asc' | t }}</a></li>
+                <li><a href="?sort_by=price-descending">{{ 'collections.sorting.price_desc' | t }}</a></li>
+                <li><a href="?sort_by=created-descending">{{ 'collections.sorting.newest' | t }}</a></li>
               </ul>
             </div>
 
@@ -292,8 +292,8 @@
                   >
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                   </svg>
-                  <h3 class="text-xl font-semibold mb-2">No products found</h3>
-                  <p class="text-base-content/70 mb-6">Try adjusting your filters or search terms.</p>
+                  <h3 class="text-xl font-semibold mb-2">{{ 'collections.no_products.title' | t }}</h3>
+                  <p class="text-base-content/70 mb-6">{{ 'collections.no_products.description' | t }}</p>
                   <button class="btn btn-primary" onclick="clearAllFilters()">{{ 'collections.filters.clear' | t }}</button>
                 </div>
               </div>

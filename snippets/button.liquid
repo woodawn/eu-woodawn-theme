@@ -1,45 +1,57 @@
-{%- doc -%}
-  Intended for use in a block similar to the button block.
-
-  @param {string} link - link to render
-  @param {object} [block] - The block
+{% doc %}
+  Renders a button block with configurable style, size, and behavior.
 
   @example
-  {% render 'button', link: '/collections/all' %}
-{%- enddoc -%}
+  {% content_for 'block', type: 'button', id: 'button' %}
+{% enddoc %}
 
-{% assign block_settings = block.settings %}
+{% if block.settings.url != blank %}
+  <a
+    href="{{ block.settings.url }}"
+    class="btn {{ block.settings.button_style }} {{ block.settings.button_size }} {{ block.settings.button_width }}"
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.icon != 'none' %}
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {% case block.settings.icon %}
+          {% when 'arrow-right' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          {% when 'shopping-cart' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+          {% when 'heart' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          {% when 'search' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          {% when 'user' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        {% endcase %}
+      </svg>
+    {% endif %}
+    {{ block.settings.text }}
+  </a>
+{% else %}
+  <button
+    type="{{ block.settings.button_type }}"
+    class="btn {{ block.settings.button_style }} {{ block.settings.button_size }} {{ block.settings.button_width }}"
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.icon != 'none' %}
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {% case block.settings.icon %}
+          {% when 'arrow-right' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          {% when 'shopping-cart' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+          {% when 'heart' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          {% when 'search' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          {% when 'user' %}
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        {% endcase %}
+      </svg>
+    {% endif %}
+    {{ block.settings.text }}
+  </button>
+{% endif %}
 
-<a
-  {% if link == blank %}
-    role="link"
-    aria-disabled="true"
-  {% else %}
-    href="{{ link }}"
-  {% endif %}
-  class="
-    size-style
-    {{ block_settings.style_class }}
-    {{ block_settings.style_class }}--{{ block.id }}
-  "
-  style="{% render 'size-style', settings: block_settings %}"
-  {%- if block_settings.open_in_new_tab -%}
-    target="_blank"
-    rel="noopener noreferrer"
-  {%- endif -%}
-  {{ block.shopify_attributes }}
->
-  {{ block_settings.label }}
-</a>
-
-{% stylesheet %}
-  .link {
-    text-decoration: none;
-    text-decoration-color: currentcolor;
-
-    &:hover {
-      color: var(--color-primary-hover);
-      text-decoration-color: transparent;
-    }
-  }
-{% endstylesheet %}

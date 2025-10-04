@@ -1,0 +1,72 @@
+{% doc %}
+  Renders a divider block with configurable style and spacing.
+
+  @example
+  {% content_for 'block', type: 'divider', id: 'divider' %}
+{% enddoc %}
+
+<div class="divider-wrapper {{ block.settings.spacing }}" {{ block.shopify_attributes }}>
+  <div class="divider {{ block.settings.divider_style }} {{ block.settings.divider_color }}">
+    {% if block.settings.text != blank %}
+      {{ block.settings.text }}
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.divider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "t:labels.text",
+      "info": "t:labels.divider_text_info"
+    },
+    {
+      "type": "select",
+      "id": "divider_style",
+      "label": "t:labels.divider_style",
+      "default": "",
+      "options": [
+        { "value": "", "label": "t:options.divider_style.solid" },
+        { "value": "divider-dash", "label": "t:options.divider_style.dashed" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "divider_color",
+      "label": "t:labels.divider_color",
+      "default": "divider-neutral",
+      "options": [
+        { "value": "divider-neutral", "label": "t:options.divider_color.neutral" },
+        { "value": "divider-primary", "label": "t:options.divider_color.primary" },
+        { "value": "divider-secondary", "label": "t:options.divider_color.secondary" },
+        { "value": "divider-accent", "label": "t:options.divider_color.accent" },
+        { "value": "divider-success", "label": "t:options.divider_color.success" },
+        { "value": "divider-warning", "label": "t:options.divider_color.warning" },
+        { "value": "divider-error", "label": "t:options.divider_color.error" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "t:labels.spacing",
+      "default": "my-8",
+      "options": [
+        { "value": "my-4", "label": "t:options.spacing.small" },
+        { "value": "my-6", "label": "t:options.spacing.medium" },
+        { "value": "my-8", "label": "t:options.spacing.large" },
+        { "value": "my-12", "label": "t:options.spacing.extra_large" },
+        { "value": "my-16", "label": "t:options.spacing.huge" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.divider",
+      "category": "t:general.layout"
+    }
+  ]
+}
+{% endschema %}

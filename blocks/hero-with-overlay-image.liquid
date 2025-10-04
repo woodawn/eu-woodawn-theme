@@ -1,0 +1,171 @@
+{% doc %}
+  Renders a hero section with background image and overlay content.
+
+  @example
+  {% content_for 'block', type: 'hero-with-overlay-image', id: 'hero' %}
+{% enddoc %}
+
+{% liquid
+  assign has_content = false
+  if block.settings.heading != blank or block.settings.text != blank or block.settings.button_text != blank
+    assign has_content = true
+  endif
+%}
+
+{% if has_content %}
+  <div
+    class="hero min-h-screen relative"
+    style="
+      {% if block.settings.background_image %}
+        background-image: url('{{ block.settings.background_image | image_url: width: 1920 }}');
+      {% endif %}
+      --overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.background_image %}
+      <div class="hero-overlay bg-black opacity-[var(--overlay-opacity)]"></div>
+    {% endif %}
+    
+    <div class="hero-content text-neutral-content text-center relative z-10">
+      <div class="max-w-md mx-auto">
+        {% if block.settings.heading != blank %}
+          <h1 class="mb-5 text-4xl md:text-5xl lg:text-6xl font-bold">
+            {{ block.settings.heading | escape }}
+          </h1>
+        {% endif %}
+        
+        {% if block.settings.text != blank %}
+          <p class="mb-5 text-lg md:text-xl">
+            {{ block.settings.text | escape }}
+          </p>
+        {% endif %}
+        
+        {% if block.settings.button_text != blank and block.settings.button_url != blank %}
+          <a 
+            href="{{ block.settings.button_url }}"
+            class="btn btn-{{ block.settings.button_style }} btn-{{ block.settings.button_size }}"
+          >
+            {{ block.settings.button_text | escape }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .hero {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  
+  .hero-content {
+    padding: 2rem 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .hero-content {
+      padding: 4rem 2rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .hero-content {
+      padding: 6rem 2rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.hero_with_overlay",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.media"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "t:labels.background_image",
+      "info": "t:labels.background_image_info"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "t:labels.overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "t:general.content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Welcome to our store"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "Discover amazing products and exceptional quality. Shop with confidence and enjoy fast, reliable delivery."
+    },
+    {
+      "type": "header",
+      "content": "t:general.button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "t:labels.button_text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "t:labels.button_url",
+      "default": "/collections/all"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "t:labels.button_style",
+      "default": "primary",
+      "options": [
+        { "value": "primary", "label": "t:options.button_style.primary" },
+        { "value": "secondary", "label": "t:options.button_style.secondary" },
+        { "value": "accent", "label": "t:options.button_style.accent" },
+        { "value": "outline", "label": "t:options.button_style.outline" },
+        { "value": "ghost", "label": "t:options.button_style.ghost" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "t:labels.button_size",
+      "default": "lg",
+      "options": [
+        { "value": "xs", "label": "t:options.button_size.extra_small" },
+        { "value": "sm", "label": "t:options.button_size.small" },
+        { "value": "md", "label": "t:options.button_size.medium" },
+        { "value": "lg", "label": "t:options.button_size.large" },
+        { "value": "xl", "label": "t:options.button_size.extra_large" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.hero_with_overlay",
+      "category": "t:general.content"
+    }
+  ]
+}
+{% endschema %}

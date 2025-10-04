@@ -1,0 +1,178 @@
+{% comment %}
+  This section is used in the customer login template to render the login form.
+
+  https://shopify.dev/docs/storefronts/themes/architecture/templates/customers/login
+{% endcomment %}
+
+<div class="container mx-auto p-6 max-w-md">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h1 class="card-title text-2xl mb-6">{{ 'customers.login.title' | t }}</h1>
+
+      {% form 'customer_login', class: 'space-y-4' %}
+        {% if form.errors %}
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold">{{ 'templates.contact.form.error_heading' | t }}</h3>
+              <div class="text-xs">
+                {{ form.errors | default_errors }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="form-control">
+          <label class="label" for="CustomerEmail">
+            <span class="label-text">{{ 'customers.login.email' | t }}</span>
+          </label>
+          <input
+            type="email"
+            name="customer[email]"
+            id="CustomerEmail"
+            class="input input-bordered w-full"
+            autocomplete="email"
+            autocorrect="off"
+            autocapitalize="off"
+            autofocus
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+              aria-describedby="CustomerEmail-error"
+            {% endif %}
+            placeholder="{{ 'customers.login.email' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label" for="CustomerPassword">
+            <span class="label-text">{{ 'customers.login.password' | t }}</span>
+          </label>
+          <input
+            type="password"
+            name="customer[password]"
+            id="CustomerPassword"
+            class="input input-bordered w-full"
+            autocomplete="current-password"
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+              aria-describedby="CustomerPassword-error"
+            {% endif %}
+            placeholder="{{ 'customers.login.password' | t }}"
+          >
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-2">
+            <input type="checkbox" name="customer[remember_me]" class="checkbox checkbox-sm" />
+            <span class="label-text">{{ 'customers.login.remember_me' | t }}</span>
+          </label>
+        </div>
+
+        <div class="form-control mt-6">
+          <button type="submit" class="btn btn-primary w-full">
+            {{ 'customers.login.submit' | t }}
+          </button>
+        </div>
+
+        <div class="text-center">
+          <a href="{{ routes.account_register_url }}" class="link link-primary">
+            {{ 'customers.login.create_account' | t }}
+          </a>
+        </div>
+
+        <div class="text-center">
+          <a href="#recover" class="link link-primary">
+            {{ 'customers.login.forgot_password' | t }}
+          </a>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+
+  {% comment %} Forgot password form {% endcomment %}
+  <div id="recover" class="hidden">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl mb-6">{{ 'customers.recover_password.title' | t }}</h2>
+        <p class="mb-4">{{ 'customers.recover_password.subtext' | t }}</p>
+
+        {% form 'recover_customer_password', class: 'space-y-4' %}
+          {% if form.errors %}
+            <div class="alert alert-error">
+              <div>
+                <h3 class="font-bold">{{ 'templates.contact.form.error_heading' | t }}</h3>
+                <div class="text-xs">
+                  {{ form.errors | default_errors }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          {% if form.posted_successfully? %}
+            <div class="alert alert-success">
+              <div>
+                <h3 class="font-bold">{{ 'customers.recover_password.success' | t }}</h3>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="form-control">
+            <label class="label" for="RecoverEmail">
+              <span class="label-text">{{ 'customers.login.email' | t }}</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="RecoverEmail"
+              class="input input-bordered w-full"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              placeholder="{{ 'customers.login.email' | t }}"
+            >
+          </div>
+
+          <div class="form-control mt-6">
+            <button type="submit" class="btn btn-primary w-full">
+              {{ 'customers.recover_password.submit' | t }}
+            </button>
+          </div>
+
+          <div class="text-center">
+            <a href="#login" class="link link-primary">
+              {{ 'customers.recover_password.cancel' | t }}
+            </a>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle between login and recover forms
+  document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.querySelector('#recover').previousElementSibling;
+    const recoverForm = document.querySelector('#recover');
+    
+    // Show recover form when clicking forgot password link
+    document.querySelector('a[href="#recover"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      loginForm.classList.add('hidden');
+      recoverForm.classList.remove('hidden');
+    });
+    
+    // Show login form when clicking cancel link
+    document.querySelector('a[href="#login"]').addEventListener('click', function(e) {
+      e.preventDefault();
+      recoverForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "t:customers.login.title",
+  "settings": []
+}
+{% endschema %}

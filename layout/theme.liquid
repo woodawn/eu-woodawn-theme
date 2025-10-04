@@ -8,7 +8,7 @@
     {% render 'css-variables' %}
 
     {% # Load and preload the critical CSS %}
-    {% comment %} {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }} {% endcomment %}
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
 
     {{ content_for_header }}
 

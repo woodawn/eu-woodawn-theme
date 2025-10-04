@@ -37,10 +37,10 @@
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-2">
-        <a href="/cart" class="btn btn-sm btn-outline" data-cart-view>
+        <a href="{{ routes.cart_url }}" class="btn btn-sm btn-outline" data-cart-view>
           View Cart
         </a>
-        <a href="/checkout" class="btn btn-sm btn-primary" data-cart-checkout>
+        <a href="{{ routes.cart_url }}/checkout" class="btn btn-sm btn-primary" data-cart-checkout>
           Checkout
         </a>
       </div>

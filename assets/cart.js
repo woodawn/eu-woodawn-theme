@@ -347,6 +347,7 @@ class CartManager {
     const cartSubtotal = this.stickyCart.querySelector("[data-cart-subtotal]");
     const cartTotal = this.stickyCart.querySelector("[data-cart-total]");
     const cartCount = this.stickyCart.querySelector("[data-cart-count]");
+    const cartSavings = this.stickyCart.querySelector("[data-cart-savings]");
 
     if (this.cart.item_count > 0) {
       // Update cart item count
@@ -363,6 +364,29 @@ class CartManager {
       if (cartCount) {
         cartCount.textContent = this.cart.item_count;
         cartCount.style.display = "block";
+      }
+
+      // Show/hide free shipping message
+      if (cartSavings) {
+        const freeShippingThreshold = 5000; // $50.00 in cents
+        if (this.cart.total_price < freeShippingThreshold) {
+          const remaining = freeShippingThreshold - this.cart.total_price;
+          cartSavings.innerHTML = `
+            <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            Add ${this.formatMoney(remaining)} more for free shipping
+          `;
+          cartSavings.style.display = "block";
+        } else {
+          cartSavings.innerHTML = `
+            <svg class="w-3 h-3 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            You qualify for free shipping!
+          `;
+          cartSavings.style.display = "block";
+        }
       }
 
       // Show sticky cart

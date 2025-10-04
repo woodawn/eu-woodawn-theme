@@ -62,7 +62,7 @@
 
         <div class="form-control">
           <label class="label cursor-pointer justify-start gap-2">
-            <input type="checkbox" name="customer[remember_me]" class="checkbox checkbox-sm" />
+            <input type="checkbox" name="customer[remember_me]" class="checkbox checkbox-sm">
             <span class="label-text">{{ 'customers.login.remember_me' | t }}</span>
           </label>
         </div>
@@ -150,19 +150,19 @@
 
 <script>
   // Toggle between login and recover forms
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.querySelector('#recover').previousElementSibling;
     const recoverForm = document.querySelector('#recover');
-    
+
     // Show recover form when clicking forgot password link
-    document.querySelector('a[href="#recover"]').addEventListener('click', function(e) {
+    document.querySelector('a[href="#recover"]').addEventListener('click', function (e) {
       e.preventDefault();
       loginForm.classList.add('hidden');
       recoverForm.classList.remove('hidden');
     });
-    
+
     // Show login form when clicking cancel link
-    document.querySelector('a[href="#login"]').addEventListener('click', function(e) {
+    document.querySelector('a[href="#login"]').addEventListener('click', function (e) {
       e.preventDefault();
       recoverForm.classList.add('hidden');
       loginForm.classList.remove('hidden');

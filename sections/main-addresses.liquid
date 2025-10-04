@@ -24,7 +24,7 @@
     <div class="card bg-base-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title mb-4">{{ 'customers.addresses.add_new' | t }}</h2>
-        
+
         {% form 'customer_address', customer.new_address, class: 'space-y-4' %}
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="form-control">
@@ -142,8 +142,7 @@
                 id="AddressProvinceNew"
                 class="select select-bordered w-full"
                 data-default="{{ form.province }}"
-              >
-              </select>
+              ></select>
             </div>
           </div>
 
@@ -182,7 +181,7 @@
 
           <div class="form-control">
             <label class="label cursor-pointer justify-start gap-2">
-              <input type="checkbox" name="address[default]" class="checkbox checkbox-sm" />
+              <input type="checkbox" name="address[default]" class="checkbox checkbox-sm">
               <span class="label-text">{{ 'customers.addresses.set_default' | t }}</span>
             </label>
           </div>
@@ -191,7 +190,11 @@
             <button type="submit" class="btn btn-primary">
               {{ 'customers.addresses.add' | t }}
             </button>
-            <button type="button" onclick="document.getElementById('add-address').classList.add('hidden')" class="btn btn-outline">
+            <button
+              type="button"
+              onclick="document.getElementById('add-address').classList.add('hidden')"
+              class="btn btn-outline"
+            >
               {{ 'customers.addresses.cancel' | t }}
             </button>
           </div>
@@ -208,7 +211,8 @@
           <div class="card-body">
             <div class="flex justify-between items-start mb-4">
               <h3 class="card-title text-lg">
-                {{ address.first_name }} {{ address.last_name }}
+                {{ address.first_name }}
+                {{ address.last_name }}
                 {% if address == customer.default_address %}
                   <span class="badge badge-primary">{{ 'customers.addresses.default' | t }}</span>
                 {% endif %}
@@ -242,7 +246,10 @@
               {% if address.address2 %}
                 <div>{{ address.address2 }}</div>
               {% endif %}
-              <div>{{ address.city }}, {{ address.province }} {{ address.zip }}</div>
+              <div>
+                {{ address.city }}, {{ address.province }}
+                {{ address.zip }}
+              </div>
               <div>{{ address.country }}</div>
               {% if address.phone %}
                 <div>{{ address.phone }}</div>
@@ -265,20 +272,20 @@
 
 <script>
   // Country/Province selector functionality
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const countrySelect = document.getElementById('AddressCountryNew');
     const provinceSelect = document.getElementById('AddressProvinceNew');
-    
+
     if (countrySelect && provinceSelect) {
-      countrySelect.addEventListener('change', function() {
+      countrySelect.addEventListener('change', function () {
         const country = this.value;
         const provinces = this.querySelector(`option[value="${country}"]`).dataset.provinces;
-        
+
         provinceSelect.innerHTML = '';
-        
+
         if (provinces) {
           const provinceOptions = JSON.parse(provinces);
-          provinceOptions.forEach(function(province) {
+          provinceOptions.forEach(function (province) {
             const option = document.createElement('option');
             option.value = province[0];
             option.textContent = province[1];

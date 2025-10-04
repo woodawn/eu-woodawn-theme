@@ -7,9 +7,7 @@
 <div class="container mx-auto p-6">
   <div class="mb-8">
     <h1 class="text-4xl font-bold mb-4">{{ 'customers.order.title' | t: name: order.name }}</h1>
-    <a href="{{ routes.account_url }}" class="link link-primary">
-      ← {{ 'customers.order.return_to_account' | t }}
-    </a>
+    <a href="{{ routes.account_url }}" class="link link-primary"> ← {{ 'customers.order.return_to_account' | t }} </a>
   </div>
 
   {% comment %} Order Status {% endcomment %}
@@ -47,7 +45,11 @@
               <div class="flex gap-4">
                 {% if line_item.image %}
                   <div class="flex-shrink-0">
-                    {% render 'image', image: line_item.image, url: line_item.product.url, class: 'w-20 h-20 rounded object-cover' %}
+                    {% render 'image',
+                      image: line_item.image,
+                      url: line_item.product.url,
+                      class: 'w-20 h-20 rounded object-cover'
+                    %}
                   </div>
                 {% endif %}
                 <div class="flex-grow">
@@ -93,14 +95,17 @@
     {% comment %} Order Summary {% endcomment %}
     <div>
       <h2 class="text-2xl font-bold mb-6">{{ 'customers.order.summary' | t }}</h2>
-      
+
       {% comment %} Shipping Address {% endcomment %}
       {% if order.shipping_address %}
         <div class="card bg-base-100 shadow-xl mb-6">
           <div class="card-body">
             <h3 class="card-title">{{ 'customers.order.shipping_address' | t }}</h3>
             <div class="text-sm">
-              <div>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }}</div>
+              <div>
+                {{ order.shipping_address.first_name }}
+                {{ order.shipping_address.last_name }}
+              </div>
               {% if order.shipping_address.company %}
                 <div>{{ order.shipping_address.company }}</div>
               {% endif %}
@@ -108,7 +113,10 @@
               {% if order.shipping_address.address2 %}
                 <div>{{ order.shipping_address.address2 }}</div>
               {% endif %}
-              <div>{{ order.shipping_address.city }}, {{ order.shipping_address.province }} {{ order.shipping_address.zip }}</div>
+              <div>
+                {{ order.shipping_address.city }}, {{ order.shipping_address.province }}
+                {{ order.shipping_address.zip }}
+              </div>
               <div>{{ order.shipping_address.country }}</div>
               {% if order.shipping_address.phone %}
                 <div>{{ order.shipping_address.phone }}</div>
@@ -124,7 +132,10 @@
           <div class="card-body">
             <h3 class="card-title">{{ 'customers.order.billing_address' | t }}</h3>
             <div class="text-sm">
-              <div>{{ order.billing_address.first_name }} {{ order.billing_address.last_name }}</div>
+              <div>
+                {{ order.billing_address.first_name }}
+                {{ order.billing_address.last_name }}
+              </div>
               {% if order.billing_address.company %}
                 <div>{{ order.billing_address.company }}</div>
               {% endif %}
@@ -132,7 +143,10 @@
               {% if order.billing_address.address2 %}
                 <div>{{ order.billing_address.address2 }}</div>
               {% endif %}
-              <div>{{ order.billing_address.city }}, {{ order.billing_address.province }} {{ order.billing_address.zip }}</div>
+              <div>
+                {{ order.billing_address.city }}, {{ order.billing_address.province }}
+                {{ order.billing_address.zip }}
+              </div>
               <div>{{ order.billing_address.country }}</div>
               {% if order.billing_address.phone %}
                 <div>{{ order.billing_address.phone }}</div>

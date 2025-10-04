@@ -58,6 +58,11 @@ class CartManager {
         this.removeFromCart(e.target);
       }
     });
+
+    // Scroll detection for sticky cart
+    window.addEventListener("scroll", () => {
+      this.handleScroll();
+    });
   }
 
   async addToCart(form) {
@@ -382,6 +387,30 @@ class CartManager {
   hideStickyCart() {
     if (!this.stickyCart) return;
     this.stickyCart.classList.remove("show");
+  }
+
+  handleScroll() {
+    if (!this.stickyCart || !this.cart || this.cart.item_count === 0) return;
+
+    // Don't show on cart or checkout pages
+    if (document.body.classList.contains('template-cart') || 
+        document.body.classList.contains('template-checkout')) {
+      return;
+    }
+
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    
+    // Show sticky cart when user scrolls down more than 200px
+    // or when they're near the bottom of the page
+    const shouldShow = scrollTop > 200 || (scrollTop + windowHeight) >= (documentHeight - 100);
+    
+    if (shouldShow) {
+      this.showStickyCart();
+    } else {
+      this.hideStickyCart();
+    }
   }
 }
 

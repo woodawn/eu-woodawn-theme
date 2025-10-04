@@ -221,6 +221,7 @@
     "divider": "Divider",
     "hero_feature": "Hero Feature",
     "hero_with_overlay": "Hero with Overlay",
+    "hero_with_figure": "Hero with Figure",
     "column": "Column",
     "row": "Row",
     "interactive": "Interactive",

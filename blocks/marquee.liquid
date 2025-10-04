@@ -1,0 +1,391 @@
+{% doc %}
+  Marquee block for horizontal scrolling content
+
+  @example
+  {% content_for 'block', type: 'marquee', id: 'announcement-marquee' %}
+{% enddoc %}
+
+<div
+  x-data="
+    marquee({
+      speed: {{ block.settings.speed | default: 50 }},
+      direction: '{{ block.settings.direction | default: 'left' }}',
+      pauseOnHover: {{ block.settings.pause_on_hover | default: true }},
+      gradient: {{ block.settings.gradient | default: true }}
+    })
+  "
+  class="marquee-container relative overflow-hidden bg-{{ block.settings.background_color | default: 'base-100' }} py-{{ block.settings.padding | default: 4 }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.heading != blank %}
+    <div class="text-center mb-4">
+      <h2 class="text-{{ block.settings.heading_size | default: 'lg' }} font-{{ block.settings.heading_weight | default: 'bold' }} text-{{ block.settings.text_color | default: 'base-content' }}">
+        {{ block.settings.heading | escape }}
+      </h2>
+    </div>
+  {% endif %}
+
+  <div
+    class="marquee-content flex whitespace-nowrap"
+    :class="{ 'marquee-paused': isPaused }"
+    :style="marqueeStyle"
+    @mouseenter="pauseOnHover && pause()"
+    @mouseleave="pauseOnHover && resume()"
+  >
+    <!-- First set of content -->
+    <div class="marquee-item flex items-center gap-{{ block.settings.item_gap | default: 8 }} px-{{ block.settings.item_padding | default: 4 }}">
+      {% if block.settings.content_type == 'text' %}
+        <span class="text-{{ block.settings.text_size | default: 'base' }} text-{{ block.settings.text_color | default: 'base-content' }}">
+          {{ block.settings.text | escape }}
+        </span>
+      {% elsif block.settings.content_type == 'richtext' %}
+        <div class="text-{{ block.settings.text_size | default: 'base' }} text-{{ block.settings.text_color | default: 'base-content' }}">
+          {{ block.settings.richtext }}
+        </div>
+      {% elsif block.settings.content_type == 'products' and block.settings.product_list != blank %}
+        {% for product in block.settings.product_list limit: block.settings.product_limit %}
+          <div class="flex items-center gap-2">
+            {% if product.featured_image %}
+              <img
+                src="{{ product.featured_image | image_url: width: 40 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                class="w-10 h-10 object-cover rounded"
+                width="40"
+                height="40"
+                loading="lazy"
+              >
+            {% endif %}
+            <span class="text-sm font-medium">{{ product.title | escape }}</span>
+            <span class="text-sm text-primary">{{ product.price | money }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Duplicate content for seamless loop -->
+    <div class="marquee-item flex items-center gap-{{ block.settings.item_gap | default: 8 }} px-{{ block.settings.item_padding | default: 4 }}">
+      {% if block.settings.content_type == 'text' %}
+        <span class="text-{{ block.settings.text_size | default: 'base' }} text-{{ block.settings.text_color | default: 'base-content' }}">
+          {{ block.settings.text | escape }}
+        </span>
+      {% elsif block.settings.content_type == 'richtext' %}
+        <div class="text-{{ block.settings.text_size | default: 'base' }} text-{{ block.settings.text_color | default: 'base-content' }}">
+          {{ block.settings.richtext }}
+        </div>
+      {% elsif block.settings.content_type == 'products' and block.settings.product_list != blank %}
+        {% for product in block.settings.product_list limit: block.settings.product_limit %}
+          <div class="flex items-center gap-2">
+            {% if product.featured_image %}
+              <img
+                src="{{ product.featured_image | image_url: width: 40 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                class="w-10 h-10 object-cover rounded"
+                width="40"
+                height="40"
+                loading="lazy"
+              >
+            {% endif %}
+            <span class="text-sm font-medium">{{ product.title | escape }}</span>
+            <span class="text-sm text-primary">{{ product.price | money }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  {% if block.settings.gradient %}
+    <div
+      class="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-{{ block.settings.background_color | default: 'base-100' }} to-transparent pointer-events-none"
+    ></div>
+    <div
+      class="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-{{ block.settings.background_color | default: 'base-100' }} to-transparent pointer-events-none"
+    ></div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .marquee-container {
+    position: relative;
+  }
+
+  .marquee-content {
+    animation: marquee-scroll linear infinite;
+  }
+
+  .marquee-paused {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee-content[data-direction='right'] {
+    animation: marquee-scroll-right linear infinite;
+  }
+
+  @keyframes marquee-scroll-right {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  function marquee(config) {
+    return {
+      speed: config.speed || 50,
+      direction: config.direction || 'left',
+      pauseOnHover: config.pauseOnHover !== false,
+      gradient: config.gradient !== false,
+      isPaused: false,
+      animationDuration: 0,
+
+      init() {
+        this.calculateAnimationDuration();
+        this.setupMarquee();
+      },
+
+      calculateAnimationDuration() {
+        const content = this.$el.querySelector('.marquee-content');
+        const item = this.$el.querySelector('.marquee-item');
+
+        if (content && item) {
+          const contentWidth = item.scrollWidth;
+          // Calculate duration based on speed (pixels per second)
+          this.animationDuration = (contentWidth / this.speed) * 1000;
+        }
+      },
+
+      setupMarquee() {
+        const content = this.$el.querySelector('.marquee-content');
+        if (content) {
+          content.style.animationDuration = `${this.animationDuration}ms`;
+          content.setAttribute('data-direction', this.direction);
+        }
+      },
+
+      pause() {
+        this.isPaused = true;
+      },
+
+      resume() {
+        this.isPaused = false;
+      },
+
+      get marqueeStyle() {
+        return {
+          animationDuration: `${this.animationDuration}ms`,
+          animationDirection: this.direction === 'right' ? 'reverse' : 'normal',
+        };
+      },
+    };
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Optional heading above the marquee"
+    },
+    {
+      "type": "select",
+      "id": "content_type",
+      "label": "Content type",
+      "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "richtext", "label": "Rich text" },
+        { "value": "products", "label": "Products" }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "info": "Text to display in the marquee"
+    },
+    {
+      "type": "richtext",
+      "id": "richtext",
+      "label": "Rich text",
+      "info": "Rich text content for the marquee"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Products",
+      "info": "Select products to display in the marquee"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "label": "Product limit",
+      "min": 1,
+      "max": 10,
+      "default": 5,
+      "info": "Maximum number of products to show"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Speed",
+      "min": 10,
+      "max": 100,
+      "default": 50,
+      "unit": "px",
+      "info": "Animation speed in pixels per second"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left to right" },
+        { "value": "right", "label": "Right to left" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "gradient",
+      "label": "Show gradient edges",
+      "default": true,
+      "info": "Add gradient fade effect at the edges"
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "select",
+      "id": "background_color",
+      "label": "Background color",
+      "options": [
+        { "value": "base-100", "label": "Base 100" },
+        { "value": "base-200", "label": "Base 200" },
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "base-100"
+    },
+    {
+      "type": "select",
+      "id": "text_color",
+      "label": "Text color",
+      "options": [
+        { "value": "base-content", "label": "Base content" },
+        { "value": "primary", "label": "Primary" },
+        { "value": "secondary", "label": "Secondary" },
+        { "value": "accent", "label": "Accent" }
+      ],
+      "default": "base-content"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" },
+        { "value": "xl", "label": "Extra large" },
+        { "value": "2xl", "label": "2X Large" }
+      ],
+      "default": "lg"
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading weight",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "semibold", "label": "Semi bold" },
+        { "value": "bold", "label": "Bold" }
+      ],
+      "default": "bold"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        { "value": "sm", "label": "Small" },
+        { "value": "base", "label": "Base" },
+        { "value": "lg", "label": "Large" }
+      ],
+      "default": "base"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Vertical padding",
+      "min": 1,
+      "max": 8,
+      "default": 4,
+      "unit": "rem"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "label": "Item gap",
+      "min": 2,
+      "max": 12,
+      "default": 8,
+      "unit": "rem"
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item padding",
+      "min": 1,
+      "max": 8,
+      "default": 4,
+      "unit": "rem"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "category": "Content",
+      "settings": {
+        "content_type": "text",
+        "text": "Welcome to our store! Free shipping on orders over $50. Limited time offer!",
+        "speed": 50,
+        "direction": "left",
+        "pause_on_hover": true,
+        "gradient": true
+      }
+    }
+  ]
+}
+{% endschema %}

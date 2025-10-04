@@ -1,0 +1,62 @@
+{% comment %}
+  Wishlist Button - Add/remove product from wishlist
+  
+  Accepts:
+  - product: {Object} Product object
+  - class: {String} CSS classes to apply
+  - size: {String} Button size (sm, md, lg)
+  - show_text: {Boolean} Show text label
+  
+  Usage:
+  {% render 'wishlist-button', product: product %}
+  {% render 'wishlist-button', product: product, size: 'sm', show_text: true %}
+{% endcomment %}
+
+{% liquid
+  assign button_size = size | default: 'md'
+  assign show_label = show_text | default: false
+  assign button_class = 'btn btn-circle btn-ghost'
+  
+  if button_size == 'sm'
+    assign button_class = button_class | append: ' btn-sm'
+  elsif button_size == 'lg'
+    assign button_class = button_class | append: ' btn-lg'
+  endif
+  
+  if class
+    assign button_class = button_class | append: ' ' | append: class
+  endif
+%}
+
+<button
+  class="{{ button_class }} wishlist-button"
+  data-wishlist-toggle
+  data-product-id="{{ product.id }}"
+  data-product-title="{{ product.title | escape }}"
+  data-product-image="{{ product.featured_image | image_url: width: 300 }}"
+  data-product-url="{{ product.url }}"
+  data-product-price="{{ product.price }}"
+  title="Add to wishlist"
+  aria-label="Add {{ product.title | escape }} to wishlist"
+>
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+  </svg>
+  {% if show_label %}
+    <span class="ml-2">Wishlist</span>
+  {% endif %}
+</button>
+
+<style>
+  .wishlist-button.wishlist-active {
+    color: #ef4444;
+  }
+  
+  .wishlist-button.wishlist-active svg {
+    fill: currentColor;
+  }
+  
+  .wishlist-button:hover {
+    color: #ef4444;
+  }
+</style>

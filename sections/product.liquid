@@ -129,14 +129,14 @@
         <div class="mb-6">
           {% if product.compare_at_price > product.price %}
             <div class="flex items-center gap-3">
-              <span class="text-3xl font-bold text-primary">{{ product.price | money }}</span>
+              <span class="text-3xl font-bold text-primary product-price">{{ product.price | money }}</span>
               <span class="text-xl text-base-content/50 line-through">{{ product.compare_at_price | money }}</span>
               <span class="badge badge-success"
                 >Save {{ product.compare_at_price | minus: product.price | money -}}
               </span>
             </div>
           {% else %}
-            <span class="text-3xl font-bold text-primary">{{ product.price | money }}</span>
+            <span class="text-3xl font-bold text-primary product-price">{{ product.price | money }}</span>
           {% endif %}
         </div>
 
@@ -151,6 +151,9 @@
         <div class="product-form mb-8">
           {% form 'product', product, class: 'space-y-6' %}
             {% assign current_variant = product.selected_or_first_available_variant %}
+            
+            <!-- Hidden variant input -->
+            <input type="hidden" name="id" value="{{ current_variant.id }}">
 
             <!-- Variant Selection -->
             {% if product.variants.size > 1 %}
@@ -692,8 +695,75 @@
     // Add selected class to clicked option
     event.target.classList.add('selected');
 
-    // Update variant selection logic here
-    console.log(`Selected ${optionName}: ${value}`);
+    // Update the hidden variant input
+    const variantInput = document.querySelector('input[name="id"]');
+    if (variantInput) {
+      // Find the variant that matches the selected options
+      const selectedVariant = findVariantByOptions();
+      if (selectedVariant) {
+        variantInput.value = selectedVariant.id;
+        updateProductInfo(selectedVariant);
+      }
+    }
+  }
+
+  function findVariantByOptions() {
+    const selectedOptions = {};
+    document.querySelectorAll('.variant-option.selected').forEach((btn) => {
+      const optionName = btn.getAttribute('data-option');
+      const optionValue = btn.getAttribute('data-value');
+      selectedOptions[optionName] = optionValue;
+    });
+
+    // Find matching variant from product variants
+    const variants = {{ product.variants | json }};
+    return variants.find(variant => {
+      return Object.keys(selectedOptions).every(optionName => {
+        const optionIndex = {{ product.options | json }}.indexOf(optionName);
+        return variant.options[optionIndex] === selectedOptions[optionName];
+      });
+    });
+  }
+
+  function updateProductInfo(variant) {
+    // Update price
+    const priceElement = document.querySelector('.product-price');
+    if (priceElement && variant) {
+      const price = new Intl.NumberFormat('{{ shop.locale }}', {
+        style: 'currency',
+        currency: '{{ shop.currency }}'
+      }).format(variant.price / 100);
+      priceElement.textContent = price;
+    }
+
+    // Update add to cart button
+    const addToCartBtn = document.querySelector('button[type="submit"]');
+    if (addToCartBtn) {
+      if (variant && variant.available) {
+        addToCartBtn.disabled = false;
+        addToCartBtn.textContent = '{{ "products.add_to_cart" | t }} - ' + 
+          new Intl.NumberFormat('{{ shop.locale }}', {
+            style: 'currency',
+            currency: '{{ shop.currency }}'
+          }).format(variant.price / 100);
+        addToCartBtn.classList.remove('btn-disabled');
+        addToCartBtn.classList.add('btn-primary');
+      } else {
+        addToCartBtn.disabled = true;
+        addToCartBtn.textContent = '{{ "products.sold_out" | t }}';
+        addToCartBtn.classList.add('btn-disabled');
+        addToCartBtn.classList.remove('btn-primary');
+      }
+    }
+
+    // Update product image if variant has different image
+    if (variant && variant.featured_image) {
+      const mainImage = document.getElementById('main-product-image');
+      if (mainImage) {
+        mainImage.src = variant.featured_image.src;
+        mainImage.alt = variant.featured_image.alt;
+      }
+    }
   }
 
   // Initialize page

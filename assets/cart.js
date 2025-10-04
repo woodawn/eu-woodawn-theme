@@ -180,7 +180,7 @@ class CartManager {
 
     // Update cart drawer content
     this.updateCartDrawer();
-    
+
     // Update sticky cart
     this.updateStickyCart();
   }
@@ -343,7 +343,9 @@ class CartManager {
   updateStickyCart() {
     if (!this.stickyCart || !this.cart) return;
 
-    const cartItemCount = this.stickyCart.querySelector("[data-cart-item-count]");
+    const cartItemCount = this.stickyCart.querySelector(
+      "[data-cart-item-count]"
+    );
     const cartSubtotal = this.stickyCart.querySelector("[data-cart-subtotal]");
     const cartTotal = this.stickyCart.querySelector("[data-cart-total]");
     const cartCount = this.stickyCart.querySelector("[data-cart-count]");
@@ -399,10 +401,12 @@ class CartManager {
 
   showStickyCart() {
     if (!this.stickyCart) return;
-    
+
     // Don't show on cart or checkout pages
-    if (document.body.classList.contains('template-cart') || 
-        document.body.classList.contains('template-checkout')) {
+    if (
+      document.body.classList.contains("template-cart") ||
+      document.body.classList.contains("template-checkout")
+    ) {
       return;
     }
 
@@ -416,10 +420,10 @@ class CartManager {
 
   animateStickyCart() {
     if (!this.stickyCart) return;
-    
+
     // Add a temporary class for animation
     this.stickyCart.classList.add("cart-added");
-    
+
     // Remove the animation class after animation completes
     setTimeout(() => {
       this.stickyCart.classList.remove("cart-added");
@@ -430,19 +434,22 @@ class CartManager {
     if (!this.stickyCart || !this.cart || this.cart.item_count === 0) return;
 
     // Don't show on cart or checkout pages
-    if (document.body.classList.contains('template-cart') || 
-        document.body.classList.contains('template-checkout')) {
+    if (
+      document.body.classList.contains("template-cart") ||
+      document.body.classList.contains("template-checkout")
+    ) {
       return;
     }
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    
+
     // Show sticky cart when user scrolls down more than 200px
     // or when they're near the bottom of the page
-    const shouldShow = scrollTop > 200 || (scrollTop + windowHeight) >= (documentHeight - 100);
-    
+    const shouldShow =
+      scrollTop > 200 || scrollTop + windowHeight >= documentHeight - 100;
+
     if (shouldShow) {
       this.showStickyCart();
     } else {
